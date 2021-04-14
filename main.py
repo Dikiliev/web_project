@@ -33,11 +33,11 @@ def register():
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', form=form, title='Регистрация',
                                    message='Почта уже зарегистрирована')
-        user = User(
-            name=form.name.data,
-            email=form.email.data
-        )
+        user = User()
+        user.name = form.name.data
+        user.email = form.email.data
         user.create_password(form.password.data)
+
         db_sess.add(user)
         db_sess.commit()
         return redirect('/')
@@ -49,7 +49,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        user = db_sess.query(User).filter((User.name == form.name_or_email.data) | (User.email == form.name_or_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')

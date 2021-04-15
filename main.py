@@ -23,6 +23,21 @@ def index():
     return render_template('index.html', title='home')
 
 
+@app.route('/profile')
+def profile():
+    return 'Profile'
+
+
+@app.route('/explore')
+def explore():
+    return 'Explore'
+
+
+@app.route('/direct')
+def direct():
+    return 'Direct'
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()

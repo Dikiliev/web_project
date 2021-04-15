@@ -3,12 +3,16 @@ from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from forms.users import RegisterForm, LoginForm
+from forms.top import DropdownForm
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+# Флаги
+is_open_dropdown = False
 
 
 @login_manager.user_loader
@@ -17,15 +21,23 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    db_sess = db_session.create_session()
-    return render_template('index.html', title='home')
+    print(is_open_dropdown)
+    form_dropdown = DropdownForm()
+    if form_dropdown.validate_on_submit():
+        print('sumbit')
+        return render_template('index.html', title='home', form_dropdown=form_dropdown)
+    return render_template('index.html', title='home', form_dropdown=form_dropdown)
 
 
-@app.route('/profile')
-def profile():
-    return 'Profile'
+def method_1():
+    print('method_1')
+
+
+@app.route('/profile/<name>')
+def profile(name):
+    return render_template('profile.html', title='profile')
 
 
 @app.route('/explore')
@@ -64,7 +76,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter((User.name == form.name_or_email.data) | (User.email == form.name_or_email.data)).first()
+        user = db_sess.query(User).filter(
+            (User.name == form.name_or_email.data) | (User.email == form.name_or_email.data)).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')

@@ -14,35 +14,26 @@
 <header class="p-3 mb-3 border-bottom">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start" >
         {% if current_user.is_authenticated %}
-        <h1>Instagram</h1>
+            <h1>Instagram</h1>
 
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
-        <input type="search" class="form-control" placeholder="Найти...">
-      </form>
+              <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
+                <input type="search" class="form-control" placeholder="Найти...">
+              </form>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 250px;">
-        <li><a href="/direct" class="nav-link px-3 link-secondary">Написать</a></li>
-        <li><a href="/explore" class="nav-link px-3 link-secondary">Лента</a></li>
-        <li><a href="#" class="nav-link px-3 link-secondary">Активность</a></li>
-        <li><a href="/profile" class="nav-link px-3 link-dark">Профиль</a></li>
-      </ul>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 100px;">
 
-      <div class="dropdown text-end" style="position: fixed; right: 100px;">
-        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="static/profile_photos/default.png" width="40" height="40" class="rounded-circle">
-        </a>
-        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-          <li><a class="dropdown-item" href="#">Профиль</a></li>
-          <li><a class="dropdown-item" href="#">Настройки</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#">Выйти</a></li>
-        </ul>
-      </div>
+                <li><a href="/direct" class="nav-link px-3 link-secondary">Написать</a></li>
+                <li><a href="/explore" class="nav-link px-3 link-secondary">Лента</a></li>
+                <li><a href="#" class="nav-link px-3 link-secondary">Активность</a></li>
+                <li><a href="/profile/{{ current_user.name }}" class="nav-link px-3 link-dark">Профиль</a></li>
+
+            </ul>
+
         {% else %}
-        <p>
-            <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
-            <a class="btn btn-success" href="/login">Войти</a>
-        </p>
+            <p>
+                <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
+                <a class="btn btn-success" href="/login">Войти</a>
+            </p>
         {% endif %}
 
     </div>

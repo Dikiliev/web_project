@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField
+from wtforms.validators import DataRequired
 
 
-class DropdownForm(FlaskForm):
-    submit = SubmitField('')
+class Button(FlaskForm):
+    submit = SubmitField('', validators=[DataRequired()])

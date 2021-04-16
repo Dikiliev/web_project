@@ -1,9 +1,9 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort
+from flask import Flask, render_template, redirect, request, make_response, session, abort, url_for
 from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from forms.users import RegisterForm, LoginForm
-from forms.top import DropdownForm
+
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 app = Flask(__name__)
@@ -23,16 +23,7 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print(is_open_dropdown)
-    form_dropdown = DropdownForm()
-    if form_dropdown.validate_on_submit():
-        print('sumbit')
-        return render_template('index.html', title='home', form_dropdown=form_dropdown)
-    return render_template('index.html', title='home', form_dropdown=form_dropdown)
-
-
-def method_1():
-    print('method_1')
+    return render_template('index.html', title='home')
 
 
 @app.route('/profile/<name>')
@@ -40,14 +31,24 @@ def profile(name):
     return render_template('profile.html', title='profile')
 
 
+@app.route('/notification')
+def notification():
+    return render_template('notification.html', title='explore')
+
+
 @app.route('/explore')
 def explore():
-    return 'Explore'
+    return render_template('explore.html', title='explore')
 
 
 @app.route('/direct')
 def direct():
-    return 'Direct'
+    return render_template('direct.html', title='direct')
+
+
+@app.route('/home')
+def home():
+    return render_template('home.html', title='home')
 
 
 @app.route('/register', methods=['GET', 'POST'])

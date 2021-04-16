@@ -22,10 +22,27 @@
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 100px;">
 
-                <li><a href="/direct" class="nav-link px-3 link-secondary">Написать</a></li>
-                <li><a href="/explore" class="nav-link px-3 link-secondary">Лента</a></li>
-                <li><a href="#" class="nav-link px-3 link-secondary">Активность</a></li>
-                <li><a href="/profile/{{ current_user.name }}" class="nav-link px-3 link-dark">Профиль</a></li>
+                <li><a href="/logout" class="nav-link px-3">Выйти</a></li>
+
+                <li><a href="/home" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='icons/home_false.png') }}" width="32" height="32">
+                </a></li>
+
+                <li><a href="/direct" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='icons/direct_false.png') }}" width="32" height="32">
+                </a></li>
+
+                <li><a href="/explore" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='icons/explore_false.png') }}" width="32" height="32">
+                </a></li>
+
+                <li><a href="/notification" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='icons/like_false.png') }}" width="32" height="32">
+                </a></li>
+
+                <li><a href="/profile/{{ current_user.name }}" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='profile_photos/default.png') }}" width="36" height="36" class="rounded-circle">
+                </a></li>
 
             </ul>
 

@@ -25,19 +25,35 @@
                 <li><a href="/logout" class="nav-link px-3">Выйти</a></li>
 
                 <li><a href="/home" class="nav-link px-3">
-                    <img src="{{ url_for('static', filename='icons/home_false.png') }}" width="32" height="32">
+                    {% if request.path == "/home" %}
+                        <img src="{{ url_for('static', filename='icons/home_true.png') }}" width="32" height="32">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/home_false.png') }}" width="32" height="32">
+                    {% endif %}
                 </a></li>
 
                 <li><a href="/direct" class="nav-link px-3">
-                    <img src="{{ url_for('static', filename='icons/direct_false.png') }}" width="32" height="32">
+                    {% if request.path == "/direct" %}
+                        <img src="{{ url_for('static', filename='icons/direct_true.png') }}" width="32" height="32">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/direct_false.png') }}" width="32" height="32">
+                    {% endif %}
                 </a></li>
 
                 <li><a href="/explore" class="nav-link px-3">
-                    <img src="{{ url_for('static', filename='icons/explore_false.png') }}" width="32" height="32">
+                    {% if request.path == "/explore" %}
+                        <img src="{{ url_for('static', filename='icons/explore_true.png') }}" width="32" height="32">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/explore_false.png') }}" width="32" height="32">
+                    {% endif %}
                 </a></li>
 
                 <li><a href="/notification" class="nav-link px-3">
-                    <img src="{{ url_for('static', filename='icons/like_false.png') }}" width="32" height="32">
+                    {% if request.path == "/notification" %}
+                        <img src="{{ url_for('static', filename='icons/like_true.png') }}" width="32" height="32">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/like_false.png') }}" width="32" height="32">
+                    {% endif %}
                 </a></li>
 
                 <li><a href="/profile/{{ current_user.name }}" class="nav-link px-3">

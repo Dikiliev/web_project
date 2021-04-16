@@ -33,7 +33,7 @@ def profile(name):
 
 @app.route('/notification')
 def notification():
-    return render_template('notification.html', title='explore')
+    return render_template('notification.html', title='notification')
 
 
 @app.route('/explore')

@@ -68,6 +68,8 @@ def register():
 
         db_sess.add(user)
         db_sess.commit()
+
+        login_user(user, True)
         return redirect('/')
     return render_template('register.html', form=form, title='Регистрация')
 

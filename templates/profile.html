@@ -2,6 +2,33 @@
 
 {% block content %}
 
-<h1>Профиль</h1>
+<header class="nav">
+    <div>
+        <img src="{{ url_for('static', filename='profile_photos/default.png') }}" width="250" height="250" class="rounded-circle">
+    </div>
+
+    <nav aria-label="nav justify-content-center">
+
+        <ol class="nav justify-content-center" style="padding: 30px; margin-left: 50px; font-size: 44px;">
+            <li class="nav-item"> <a>{{ current_user.name }}</a></li>
+            <li class="nav-item"> <a><button type="button" class="btn btn-outline-secondary" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button></a></li>
+        </ol>
+
+        <ol class="nav justify-content-center">
+            <st href="#">8 публикации</st>
+            <st href="#">1300 подписчиков</st>
+            <st href="#">305 подписок</st>
+        </ol>
+
+        <ol class="nav justify-content-left">
+            <bl-36px>Имя</bl-36px>
+        </ol>
+
+        <ol class="nav justify-content-left">
+            <st>Описание</st>
+        </ol>
+    </nav>
+
+</header>
 
 {% endblock %}

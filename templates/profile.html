@@ -2,14 +2,14 @@
 
 {% block content %}
 
-<header class="nav">
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
     <div>
-        <img src="{{ url_for('static', filename='user_data/profile_photos/default.png') }}" width="250" height="250" class="rounded-circle">
+        <img src="{{ url_for('static', filename='user_data/profile_photos/default.png') }}" width="200" height="200" class="rounded-circle" style="margin-top: 20px;">
     </div>
 
     <nav aria-label="nav justify-content-center">
 
-        <ol class="nav justify-content-center" style="padding: 30px; margin-left: 50px; font-size: 44px;">
+        <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
             <li class="nav-item"> <a>{{ current_user.name }}</a></li>
             <li class="nav-item"> <a><button type="button" class="btn btn-outline-secondary" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button></a></li>
         </ol>
@@ -30,5 +30,21 @@
     </nav>
 
 </header>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3", style="width: 1065px">
+            {% for pub in [1, 2, 3, 4, 5, 6, 7] %}
+                <div class="col">
+                  <div>
+                     <img src="{{ url_for('static', filename='user_data/profile_photos/default.png') }}" width="350" height="350" vspace="5">
+
+                  </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+  </div>
 
 {% endblock %}

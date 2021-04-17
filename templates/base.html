@@ -13,8 +13,8 @@
 
 </head>
 <body>
-<header class="p-3 mb-3 border-bottom">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start" >
+<header class="p-3 mb-3 border-bottom" style="background-color: #ffffff; position: fixed; width: 1920px">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         {% if current_user.is_authenticated %}
             <h1>Instagram</h1>
 
@@ -74,7 +74,7 @@
     </div>
 </header>
 <!-- Begin page content -->
-<main role="main" class="container">
+<main role="main" class="container" style="background-color: #FAFAFA; position: relative; top: 80px; z-index: -1; max-width: 1920px; min-height: 1000px">
     {% block content %}
     {% endblock %}
 </main>

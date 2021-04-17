@@ -5,6 +5,7 @@ from data.users import User
 from forms.users import RegisterForm, LoginForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from data.additional_methods import is_latin
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -61,6 +62,15 @@ def register():
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', form=form, title='Регистрация',
                                    message='Почта уже зарегистрирована')
+
+        if db_sess.query(User).filter(User.name == form.name.data).first():
+            return render_template('register.html', form=form, title='Регистрация',
+                                   message='Имя пользователя занято')
+
+        if not is_latin(form.name.data):
+            return render_template('register.html', form=form, title='Регистрация',
+                                   message='Именах пользователя можно использовать только буквы(a-z), цифры, симбволы подчерикивания и точки')
+
         user = User()
         user.name = form.name.data
         user.email = form.email.data

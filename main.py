@@ -29,7 +29,9 @@ def index():
 
 @app.route('/profile/<name>')
 def profile(name):
-    return render_template('profile.html', title='profile')
+    db_sess = db_session.create_session()
+    user_data = db_sess.query(User).filter(User.name == name).first().other_data
+    return render_template('profile.html', title='profile', user_data=user_data)
 
 
 @app.route('/notification')
@@ -73,11 +75,15 @@ def register():
 
         user = User()
         user.name = form.name.data
+        user.full_name = form.full_name.data
+        user.about = form.about.data
         user.email = form.email.data
         user.create_password(form.password.data)
 
         db_sess.add(user)
         db_sess.commit()
+
+        db_sess.query(User).filter(User.name == user.name).first().__init__()
 
         login_user(user, True)
         return redirect('/')

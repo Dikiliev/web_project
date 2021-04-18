@@ -30,7 +30,9 @@ def index():
 @app.route('/profile/<name>')
 def profile(name):
     db_sess = db_session.create_session()
-    user_data = db_sess.query(User).filter(User.name == name).first().other_data
+    user = db_sess.query(User).filter(User.name == name).first()
+    user.__init__()
+    user_data = user.other_data
     return render_template('profile.html', title='profile', user_data=user_data)
 
 

@@ -31,13 +31,18 @@
 
 </header>
 
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+        <a><button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button></a>
+
+</header>
+
 <div class="album py-5 bg-light">
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3", style="width: 1065px">
-            {% for pub in [1, 2, 3, 4, 5, 6, 7] %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
+            {% for pub in user_data["publications"] %}
                 <div class="col">
                   <div>
-                     <img src="{{ url_for('static', filename='user_data/profile_photos/default.png') }}" width="350" height="350" vspace="5">
+                     <img src="{{ url_for('static', filename='user_data/profile_photos/' + pub + '.png') }}" width="350" height="350" vspace="5">
 
                   </div>
                 </div>

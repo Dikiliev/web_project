@@ -2,10 +2,12 @@ from flask import Flask, render_template, redirect, request, make_response, sess
 from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
+from data.publications import Publication
 from forms.users import RegisterForm, LoginForm
+from forms.publications import AddPublicationForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin
+from data.additional_methods import is_latin, image_1600
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,6 +36,45 @@ def profile(name):
     user.__init__()
     user_data = user.other_data
     return render_template('profile.html', title='profile', user_data=user_data)
+
+
+is_view = False
+
+
+@app.route('/add_publication', methods=['GET', 'POST'])
+def add_publication():
+    global is_view
+    form = AddPublicationForm()
+
+    if form.submit_view.data or form.submit.data:
+        current_user.load_data()
+        photo_name = f'id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}'
+
+        if not is_view:
+            image_1600(request.files['file'], photo_name)
+            is_view = True
+
+        if form.submit.data:
+            is_view = False
+
+            db_sess = db_session.create_session()
+            publication = Publication()
+            publication.user_id = current_user.id
+            publication.filename_photo = photo_name
+            publication.about = form.about.data
+
+            db_sess.add(publication)
+            db_sess.commit()
+
+            user = db_sess.query(User).filter(User.id == current_user.id).first()
+            user.load_data()
+            user.other_data['publications'].append(photo_name)
+            user.save_data()
+
+            return redirect(f'/profile/{current_user.name}')
+        else:
+            return render_template('add_publication.html', title='add_publication', form=form, photo_name=photo_name)
+    return render_template('add_publication.html', title='add_publication', form=form)
 
 
 @app.route('/notification')

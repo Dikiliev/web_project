@@ -15,7 +15,7 @@
         </ol>
 
         <ol class="nav justify-content-center">
-            <st href="#">{{ user_data.publications|length }} публикации</st>
+            <st>{{ user_data.publications|length }} публикации</st>
             <st href="#">{{ user_data.followers|length }} подписчиков</st>
             <st href="#">{{ user_data.subscriptions|length }} подписок</st>
         </ol>
@@ -32,7 +32,9 @@
 </header>
 
 <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
-        <a><button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button></a>
+        <a href="/add_publication">
+            <button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
+        </a>
 
 </header>
 
@@ -42,7 +44,7 @@
             {% for pub in user_data["publications"] %}
                 <div class="col">
                   <div>
-                     <img src="{{ url_for('static', filename='user_data/profile_photos/' + pub + '.png') }}" width="350" height="350" vspace="5">
+                     <img src="{{ url_for('static', filename='user_data/publications/' + pub + '.png') }}" width="350" height="350" vspace="5">
 
                   </div>
                 </div>

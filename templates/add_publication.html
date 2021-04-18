@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <h1>Добавление публикации</h1>
+            <form action="" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                {% if not form.submit_view.data %}
+                    <p>
+                        {{ form.file.label }}<br>
+                        {{ form.file() }}<br>
+
+                        {% for error in form.file.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+                <p>
+                    <div class="col">
+                  <div>
+                      {% if form.submit_view.data %}
+                        <img src="{{ url_for('static', filename='user_data/publications/' + photo_name + '.png') }}" width="1000" height="1000" vspace="5">
+                      {% endif %}
+                  </div>
+                </div>
+                </p>
+
+                {% if not form.submit_view.data %}
+                    <p>{{ form.submit_view(type="submit", class="btn btn-primary") }}</p>
+                {% endif %}
+
+                <p>
+                    {{ form.about.label }}<br>
+                    {{ form.about(class="form-control", style="height: 200px") }}<br>
+                    {% for error in form.about.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </p>
+
+                <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+                {{message}}
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

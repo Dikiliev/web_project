@@ -5,6 +5,7 @@ from data.users import User
 from data.publications import Publication
 from forms.users import RegisterForm, LoginForm
 from forms.publications import AddPublicationForm
+from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from data.additional_methods import is_latin, image_1600
@@ -29,13 +30,26 @@ def index():
     return render_template('index.html', title='home')
 
 
-@app.route('/profile/<name>')
+@app.route('/profile/<name>', methods=['GET', 'POST'])
 def profile(name):
+
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
+
+    if user is None:
+        return render_template('profile.html', title='profile', user_data=False)
+
     user.__init__()
     user_data = user.other_data
+
     return render_template('profile.html', title='profile', user_data=user_data)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search_user():
+    db_sess = db_session.create_session()
+    form = SearchForm()
+    return render_template('search.html', title='search', form=form)
 
 
 is_view = False

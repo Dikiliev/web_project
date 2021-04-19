@@ -18,8 +18,8 @@
         {% if current_user.is_authenticated %}
             <h1>Instagram</h1>
 
-              <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
-                <input type="search" class="form-control" placeholder="Найти...">
+              <form action="/search" method="post" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
+                  <button type="sumbit" class="btn btn-outline-dark" style="width: 350px;">Найти...</button>
               </form>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 100px;">

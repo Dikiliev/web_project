@@ -8,7 +8,7 @@ from forms.publications import AddPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin, image_size
+from data.additional_methods import is_latin, image_size, random_list
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -146,7 +146,12 @@ def notification():
 
 @app.route('/explore')
 def explore():
-    return render_template('explore.html', title='explore')
+    db_sess = db_session.create_session()
+    publications = db_sess.query(Publication).filter(Publication.user_id != current_user.id).all()
+    publications = [pub.filename_photo for pub in publications]
+    publications = random_list(publications)
+
+    return render_template('explore.html', title='explore', publications=publications)
 
 
 @app.route('/direct')

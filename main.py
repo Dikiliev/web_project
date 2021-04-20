@@ -139,6 +139,12 @@ def add_publication():
     return render_template('add_publication.html', title='add_publication', form=form)
 
 
+@app.route('/show_publication', methods=['GET', 'POST'])
+def show_publication():
+    return render_template('publication.html', title='publication')
+
+
+
 @app.route('/notification')
 def notification():
     return render_template('notification.html', title='notification')

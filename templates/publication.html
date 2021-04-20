@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+        <div>
+            <img src="{{ url_for('static', filename=current_user.filename_photo) }}" width="1000" height="1000" style="margin-top: 20px;">
+        </div>
+
+        <nav aria-label="nav justify-content-center">
+
+            <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
+                <img src="{{ url_for('static', filename=current_user.filename_photo) }}" class="rounded-circle" width="200" height="200" style="margin-top: 20px;">
+            </ol>
+
+            <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
+                <li class="nav-item"> <a>{{ current_user.name }}</a></li>
+            </ol>
+
+
+
+
+            <ol class="nav justify-content-left">
+                <st>Где то там поисание чето тыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы  ыыыыыыыыывыв фыв фыам должно быть типа птого наверное дума </st>
+            </ol>
+        </nav>
+
+    </header>
+{% endblock %}

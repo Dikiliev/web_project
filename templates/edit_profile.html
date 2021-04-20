@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="album py-5 bg-light">
+        <form action="" method="post" class="container" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <h1>Редактирование профиля</h1>
+            <nav class="nav container" style="padding: 20px">
+                <li class="nav-item">
+                    <img src="{{ url_for('static', filename=current_user.filename_photo) }}" width="300" height="300" class="rounded-circle" style="margin-top: 30px;">
+                </li>
+                <li class="nav-item">
+                    {{ form.file.label }}<br>
+                    {{ form.file }}<br>
+                </li>
+            </nav>
+            <p style="margin-top: 30px;">
+                {{ form.name.label }}<br>
+                {{ form.name(class="form-control") }}<br>
+                {% for error in form.name.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.full_name.label }}<br>
+                {{ form.full_name(class="form-control") }}<br>
+                {% for error in form.full_name.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.about.label }}<br>
+                {{ form.about(class="form-control") }}<br>
+                {% for error in form.about.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.email.label }}<br>
+                {{ form.email(class="form-control", type="email") }}<br>
+                {% for error in form.email.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.phone.label }}<br>
+                {{ form.phone(class="form-control") }}<br>
+                {% for error in form.phone.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+
+            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+            {{message}}
+
+        </form>
+    </div>
+
+{% endblock %}

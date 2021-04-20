@@ -6,15 +6,15 @@ def is_latin(text):
     return True
 
 
-def image_1600(image, name):
+def image_size(image, filename, size=(1600, 1600)):
 
-    with open(f'static/user_data/publications/{name}.png', 'wb') as file:
+    with open('static/' + filename, 'wb') as file:
         file.write(image.read())
         file.close()
 
     from PIL import Image
 
-    img = Image.open(f'static/user_data/publications/{name}.png')
+    img = Image.open('static/' + filename)
 
     x, y = img.size
     remainder = abs(x - y) // 2
@@ -26,5 +26,5 @@ def image_1600(image, name):
         area = (0, remainder, x, y - remainder)
 
     img = img.crop(area)
-    img = img.resize((1600, 1600), Image.ANTIALIAS)
-    img.save(f'static/user_data/publications/{name}.png')
+    img = img.resize((size[0], size[1]), Image.ANTIALIAS)
+    img.save('static/' + filename)

@@ -20,8 +20,9 @@ class User(SqlAlchemyBase, UserMixin):
                               index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    phone = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    about = sqlalchemy.Column(sqlalchemy.String, nullable=True, default='')
+    phone = sqlalchemy.Column(sqlalchemy.String, nullable=True, default='+7 ')
+    about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    filename_photo = sqlalchemy.Column(sqlalchemy.String, nullable=True, default='user_data/profile_photos/default.png')
 
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)

@@ -5,8 +5,10 @@ from wtforms.validators import DataRequired
 
 
 class AddPublicationForm(FlaskForm):
+    submit_cancel = SubmitField('Отмена', validators=[DataRequired()])
     file = FileField('Выберите фотографию', validators=[DataRequired()])
     submit_view = SubmitField('Посмотреть', validators=[DataRequired()])
+
     about = TextAreaField('Описание:', validators=[DataRequired()])
 
     submit = SubmitField('Опубликовать', validators=[DataRequired()])

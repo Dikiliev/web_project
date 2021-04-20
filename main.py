@@ -130,7 +130,7 @@ def add_publication():
 
             user = db_sess.query(User).filter(User.id == current_user.id).first()
             user.load_data()
-            user.other_data['publications'].append(photo_name)
+            user.other_data['publications'].insert(0, photo_name)
             user.save_data()
 
             return redirect(f'/profile/{current_user.name}')

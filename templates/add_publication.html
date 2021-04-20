@@ -4,6 +4,7 @@
     <div class="album py-5 bg-light">
         <div class="container">
             <h1>Добавление публикации</h1>
+
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
@@ -44,7 +45,10 @@
                     {% endfor %}
                 </p>
 
-                <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+                <p>
+                    {{ form.submit(type="submit", class="btn btn-primary") }}
+                    <a href="/profile/{{current_user.name}}"> <button type="button" class="btn btn-primary">Отмена</button></a>
+                </p>
                 {{message}}
 
             </form>

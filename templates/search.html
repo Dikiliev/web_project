@@ -1,38 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
         <nav class="container">
-            <h1>Найти...</h1>
+            <h1 class="white">Найти...</h1>
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
                 <p>
-                    {{ form.name.label }}<br>
-                    {{ form.name(class="form-control") }}<br>
+                    {{ form.name.label(class="white") }}<br>
+                    {{ form.name(class="form-control black-form")}}<br>
                     {% for error in form.name.errors %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error }}
-                        </div>
                     {% endfor %}
                 </p>
 
-                <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+                <p>{{ form.submit(type="submit", class="btn btn-danger", style="width: 200px") }}</p>
                 {{message}}
 
                 {% if  form.validate_on_submit() %}
                     {% for user in users %}
-                        <div class="btn alert-light nav nav-tabs" style="margin-top: 10px">
-                            <a class="nav" href="profile/{{user.name}}">
+                        <a class="btn btn-dark nav nav-tabs" href="profile/{{user.name}}" style="margin-top: 10px">
+                            <div class="nav">
+
                                     <div class="nav-item" style="margin-left: 20px">
                                         <img src="{{ url_for('static', filename=user.filename_photo) }}" width="60" height="60" class="rounded-circle">
                                     </div>
-                                    <div class="nav flex-column nav-pills me-3">
+                                    <div class="nav flex-column" align="left">
                                         <bl-700>{{user.name}}</bl-700>
                                         <bl-300>{{user.full_name}}</bl-300>
                                     </div>
-                            </a>
-                        </div>
+                            </div>
+                        </a>
                     {% endfor %}
 
                 {% endif %}

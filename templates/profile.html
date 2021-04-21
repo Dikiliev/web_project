@@ -2,16 +2,16 @@
 
 {% block content %}
 {% if user_data %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-danger" style="margin-left: -15px; width: 1900px;">
         <div>
             <img src="{{ url_for('static', filename=user.filename_photo) }}" width="200" height="200" class="rounded-circle" style="margin-top: 20px;">
         </div>
         <nav aria-label="nav justify-content-center">
             <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <li class="nav-item"> <a>{{ user.name }}</a></li>
+                <li class="nav-item"> <a style="color: #ffffff">{{ user.name }}</a></li>
                 {% if user.id == current_user.id %}
                     <li class="nav-item"> <a href="/edit_profile">
-                        <button type="button" class="btn btn-outline-secondary" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
+                        <button type="button" class="btn btn-outline-danger" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
                     </a></li>
                 {% elif user.id in curr_user_data.subscriptions %}
                     <form action="" method="post">
@@ -28,6 +28,7 @@
                         </a></li>
                     </form>
                 {% endif %}
+                <li class="nav-item"> <a href="/logout" style="margin-top: 17.5px; margin-left: 10px; width: 100px; height: 45px;" class="btn btn-outline-danger nav-link px-3">Выйти</a></li>
             </ol>
             <ol class="nav justify-content-center">
                 <st>{{ user_data.publications|length }} публикации</st>
@@ -42,14 +43,18 @@
             </ol>
         </nav>
     </header>
+
     {% if user.id == current_user.id %}
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-danger" style="margin-left: -15px; width: 1900px;">
                 <a href="/add_publication">
-                    <button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
+                    <button type="button" class="btn btn-danger" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
                 </a>
+
         </header>
     {% endif %}
-    <div class="album py-5 bg-light">
+
+    <div class="album py-5">
+
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
                 {% for pub in user_data["publications"] %}

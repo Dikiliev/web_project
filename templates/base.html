@@ -13,18 +13,16 @@
 
 </head>
 <body>
-<header class="p-3 mb-3 border-bottom" style="background-color: #ffffff; position: fixed; width: 1920px; z-index: 1">
+<header class="p-3 mb-3 border-bottom border-danger" style="background-color: #1A1A1D; position: fixed; width: 1920px; z-index: 1">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         {% if current_user.is_authenticated %}
-            <h1>Insta hub</h1>
+            <h1 style="color: #dc3545">E<span style="color: #ffffff">clipse</span></h1>
 
-              <form action="/search" method="post" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
-                  <button type="sumbit" class="btn btn-outline-dark" style="width: 350px;">Найти...</button>
-              </form>
+              <a href="/search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
+                  <button type="button" class="btn btn-outline-danger" style="width: 350px;">Найти...</button>
+              </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 100px;">
-
-                <li><a href="/logout" class="nav-link px-3">Выйти</a></li>
 
                 <li><a href="/home" class="nav-link px-3">
                     {% if request.path == "/home" %}
@@ -34,13 +32,6 @@
                     {% endif %}
                 </a></li>
 
-                <li><a href="/direct" class="nav-link px-3">
-                    {% if request.path == "/direct" %}
-                        <img src="{{ url_for('static', filename='icons/direct_true.png') }}" width="32" height="32">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='icons/direct_false.png') }}" width="32" height="32">
-                    {% endif %}
-                </a></li>
 
                 <li><a href="/explore" class="nav-link px-3">
                     {% if request.path == "/explore" %}
@@ -59,7 +50,7 @@
                 </a></li>
 
                 <li><a href="/profile/{{ current_user.name }}" class="nav-link px-3">
-                    <img src="{{ url_for('static', filename='user_data/profile_photos/default.png') }}" width="36" height="36" class="rounded-circle">
+                    <img src="{{ url_for('static', filename=current_user.filename_photo) }}" width="36" height="36" class="rounded-circle">
                 </a></li>
 
             </ul>
@@ -74,7 +65,7 @@
     </div>
 </header>
 <!-- Begin page content -->
-<main role="main" class="container" style="background-color: #FAFAFA; position: relative; top: 80px; max-width: 1920px; min-height: 1000px">
+<main role="main" class="container" style="background-color: #1A1A1D; position: relative; top: 80px; max-width: 1920px; min-height: 1000px">
     {% block content %}
     {% endblock %}
 </main>

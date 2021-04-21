@@ -38,6 +38,7 @@ def profile(name):
     curr_user_data = current_user.other_data
     user.__init__()
     user_data = user.other_data
+    
     form = ProfileForm()
     if form.validate_on_submit():
         if user.id in current_user.other_data['subscriptions']:
@@ -46,10 +47,13 @@ def profile(name):
         else:
             current_user.other_data['subscriptions'].append(user.id)
             user.other_data['followers'].append(current_user.id)
+
         user.save_data()
         current_user.save_data()
+
     if user is None:
         return render_template('profile.html', title='profile', user_data=False)
+
     return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])

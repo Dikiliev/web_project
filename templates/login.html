@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
         <form action="" method="post" class="container">
 
             {{ form.hidden_tag() }}
-            <h1>Авторизация</h1>
+            <h1 class="white">Авторизация</h1>
             <p>
-                {{ form.name_or_email.label }}<br>
-                {{ form.name_or_email(class="form-control") }}<br>
+                {{ form.name_or_email.label(class="white") }}<br>
+                {{ form.name_or_email(class="form-control black-form") }}<br>
                 {% for error in form.name_or_email.errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error }}
@@ -16,15 +16,15 @@
                 {% endfor %}
             </p>
             <p>
-                {{ form.password.label }}<br>
-                {{ form.password(class="form-control", type="password") }}<br>
+                {{ form.password.label(class="white") }}<br>
+                {{ form.password(class="form-control black-form", type="password") }}<br>
                 {% for error in form.password.errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error }}
                     </div>
                 {% endfor %}
             </p>
-            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+            <p>{{ form.remember_me() }} {{ form.remember_me.label(class="white") }}</p>
             <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
             <div>{{ message }}</div>
         </form><

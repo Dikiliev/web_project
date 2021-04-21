@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
         <form action="" method="post" class="container">
             {{ form.hidden_tag() }}
 
-            <h1>Регистрация</h1>
+            <h1 class="white">Регистрация</h1>
             <p>
-                {{ form.name.label }}<br>
-                {{ form.name(class="form-control") }}<br>
+                {{ form.name.label(class="white") }}<br>
+                {{ form.name(class="form-control black-form") }}<br>
                 {% for error in form.name.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -17,8 +17,8 @@
             </p>
 
             <p>
-                {{ form.full_name.label }}<br>
-                {{ form.full_name(class="form-control") }}<br>
+                {{ form.full_name.label(class="white") }}<br>
+                {{ form.full_name(class="form-control black-form") }}<br>
                 {% for error in form.full_name.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -27,8 +27,8 @@
             </p>
 
             <p>
-                {{ form.about.label }}<br>
-                {{ form.about(class="form-control") }}<br>
+                {{ form.about.label(class="white") }}<br>
+                {{ form.about(class="form-control black-form") }}<br>
                 {% for error in form.about.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -37,8 +37,8 @@
             </p>
 
             <p>
-                {{ form.email.label }}<br>
-                {{ form.email(class="form-control", type="email") }}<br>
+                {{ form.email.label(class="white") }}<br>
+                {{ form.email(class="form-control black-form", type="email") }}<br>
                 {% for error in form.email.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -46,8 +46,8 @@
                 {% endfor %}
             </p>
             <p>
-                {{ form.password.label }}<br>
-                {{ form.password(class="form-control", type="password") }}<br>
+                {{ form.password.label(class="white") }}<br>
+                {{ form.password(class="form-control black-form", type="password") }}<br>
                 {% for error in form.password.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -55,8 +55,8 @@
                 {% endfor %}
             </p>
             <p>
-                {{ form.password_again.label }}<br>
-                {{ form.password_again(class="form-control", type="password") }}<br>
+                {{ form.password_again.label(class="white") }}<br>
+                {{ form.password_again(class="form-control black-form", type="password") }}<br>
                 {% for error in form.password_again.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
@@ -64,7 +64,7 @@
                 {% endfor %}
             </p>
 
-            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+            <p>{{ form.submit(type="submit", class="btn btn-danger") }}</p>
             {{message}}
 
         </form>

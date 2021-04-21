@@ -1,70 +1,73 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 {% if user_data %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
-        <div>
-            <img src="{{ url_for('static', filename=current_user.filename_photo) }}" width="200" height="200" class="rounded-circle" style="margin-top: 20px;">
-        </div>
-
-        <nav aria-label="nav justify-content-center">
-
-            <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <li class="nav-item"> <a>{{ current_user.name }}</a></li>
-                <li class="nav-item"> <a href="/edit_profile"><button type="button" class="btn btn-outline-secondary" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button></a></li>
-            </ol>
-
-            <ol class="nav justify-content-center">
-                <st>{{ user_data.publications|length }} публикации</st>
-                <st href="#">{{ user_data.followers|length }} подписчиков</st>
-                <st href="#">{{ user_data.subscriptions|length }} подписок</st>
-            </ol>
-
-            <ol class="nav justify-content-left">
-                <bl-36px>{{ current_user.full_name }}</bl-36px>
-            </ol>
-
-            <ol class="nav justify-content-left">
-                <st>{{ current_user.about }}</st>
-            </ol>
-        </nav>
-
-    </header>
-
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
-            <a href="/add_publication">
-                <button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
-            </a>
-
-    </header>
-
-    <div class="album py-5 bg-light">
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
-                {% for pub in user_data["publications"] %}
-                    <div class="col">
-                      <div>
-                         <img src="{{ url_for('static', filename=pub) }}" width="350" height="350" vspace="5">
-
-                      </div>
-                    </div>
-
-                {% endfor %}
-            </div>
-        </div>
-      </div>
-
-{% else %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
-
-            <nav aria-label="nav justify-content-center">
-                <ol class="nav justify-content-left">
-                    <bl-36px>Пользователь '{{ request.path.split('/')[-1] }}' не найден</bl-36px>
-                </ol>
-            </nav>
-
-        </header>
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <div>
+        <img src="{{ url_for('static', filename=user.filename_photo) }}" width="200" height="200" class="rounded-circle"
+             style="margin-top: 20px;">
+    </div>
+    <nav aria-label="nav justify-content-center">
+        <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
+            <li class="nav-item"><a>{{ user.name }}</a></li>
+            {% if user.id == current_user.id %}
+            <li class="nav-item"><a href="/edit_profile">
+                <button type="button" class="btn btn-outline-secondary"
+                        style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль
+                </button>
+            </a></li>
+            {% else %}
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <li class="nav-item"><a>
+                    {{ form.submit_sub(type="submit", class="btn btn-primary", style="margin-left: 70px; width: 300px;
+                    height: 45px;") }}
+                </a></li>
+            </form>
+            {% endif %}
+        </ol>
+        <ol class="nav justify-content-center">
+            <st>{{ user_data.publications|length }} публикации</st>
+            <st href="#">{{ user_data.followers|length }} подписчиков</st>
+            <st href="#">{{ user_data.subscriptions|length }} подписок</st>
+        </ol>
+        <ol class="nav justify-content-left">
+            <bl-600>{{ user.full_name }}</bl-600>
+        </ol>
+        <ol class="nav justify-content-left">
+            <st>{{ user.about }}</st>
+        </ol>
+    </nav>
+</header>
+{% if user.id == current_user.id %}
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <a href="/add_publication">
+        <button type="button" class="btn btn-primary" style="margin-top: -25px; width: 400px; height: 45px;">Добавить
+            публикацию
+        </button>
+    </a>
+</header>
 {% endif %}
-
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
+            {% for pub in user_data["publications"] %}
+            <div class="col">
+                <div>
+                    <img src="{{ url_for('static', filename=pub) }}" width="350" height="350" vspace="5">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <nav aria-label="nav justify-content-center">
+        <ol class="nav justify-content-left">
+            <bl-36px>Пользователь '{{ request.path.split('/')[-1] }}' не найден</bl-36px>
+        </ol>
+    </nav>
+</header>
+{% endif %}
 {% endblock %}

@@ -27,7 +27,7 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title='home')
+    return render_template('index.html', title='Home')
 
 
 @app.route('/profile/<name>', methods=['GET', 'POST'])
@@ -41,7 +41,7 @@ def profile(name):
     user.__init__()
     user_data = user.other_data
 
-    return render_template('profile.html', title='profile', user_data=user_data)
+    return render_template('profile.html', title=user.name, user_data=user_data)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -90,7 +90,7 @@ def edit_profile():
     current_user.load_data()
     user_data = current_user.other_data
 
-    return render_template('edit_profile.html', title='edit_profile', form=form, user_data=user_data)
+    return render_template('edit_profile.html', title='Изменить профиль', form=form, user_data=user_data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -108,7 +108,7 @@ def search_user():
 
         return render_template('search.html', title='search', form=form, users=users)
 
-    return render_template('search.html', title='search', form=form)
+    return render_template('search.html', title='Поиск', form=form)
 
 
 is_view = False
@@ -156,17 +156,17 @@ def add_publication():
         else:
             # Показ фотографии
             return render_template('add_publication.html', title='add_publication', form=form, photo_name=photo_name)
-    return render_template('add_publication.html', title='add_publication', form=form)
+    return render_template('add_publication.html', title='Добавить новость', form=form)
 
 
 @app.route('/show_publication', methods=['GET', 'POST'])
 def show_publication():
-    return render_template('publication.html', title='publication')
+    return render_template('publication.html', title='Публикации')
 
 
 @app.route('/notification')
 def notification():
-    return render_template('notification.html', title='notification')
+    return render_template('notification.html', title='Уведомления')
 
 
 @app.route('/explore')
@@ -179,17 +179,17 @@ def explore():
     # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)
 
-    return render_template('explore.html', title='explore', publications=publications)
+    return render_template('explore.html', title='Публикации', publications=publications)
 
 
 @app.route('/direct')
 def direct():
-    return render_template('direct.html', title='direct')
+    return render_template('direct.html', title='Cообщения')
 
 
 @app.route('/home')
 def home():
-    return render_template('home.html', title='home')
+    return render_template('home.html', title='Home')
 
 
 @app.route('/register', methods=['GET', 'POST'])

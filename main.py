@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from data.publications import Publication
-from forms.users import RegisterForm, LoginForm, EditProfileForm
+from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
 from forms.publications import AddPublicationForm
 from forms.search import SearchForm
 
@@ -34,14 +34,27 @@ def index():
 def profile(name):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
+    current_user.load_data()
+    curr_user_data = current_user.other_data
+    user.__init__()
+    user_data = user.other_data
+
+    form = ProfileForm()
+    if form.validate_on_submit():
+        if user.id in current_user.other_data['subscriptions']:
+            current_user.other_data['subscriptions'].remove(user.id)
+            user.other_data['followers'].remove(current_user.id)
+        else:
+            current_user.other_data['subscriptions'].append(user.id)
+            user.other_data['followers'].append(current_user.id)
+
+        user.save_data()
+        current_user.save_data()
 
     if user is None:
         return render_template('profile.html', title='profile', user_data=False)
 
-    user.__init__()
-    user_data = user.other_data
-
-    return render_template('profile.html', title='profile', user_data=user_data)
+    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])

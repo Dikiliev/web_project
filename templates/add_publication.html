@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
         <div class="container">
-            <h1>Добавление публикации</h1>
+            <h1 class="white">Добавление публикации</h1>
 
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
                 {% if not form.submit_view.data %}
                     <p>
-                        {{ form.file.label }}<br>
-                        {{ form.file() }}<br>
+                        {{ form.file.label(class="white") }}<br>
+                        {{ form.file(class="white") }}<br>
 
                         {% for error in form.file.errors %}
                             <div class="alert alert-danger" role="alert">
@@ -32,12 +32,12 @@
                 </p>
 
                 {% if not form.submit_view.data %}
-                    <p>{{ form.submit_view(type="submit", class="btn btn-primary") }}</p>
+                    <p>{{ form.submit_view(type="submit", class="btn btn-danger") }}</p>
                 {% endif %}
 
                 <p>
-                    {{ form.about.label }}<br>
-                    {{ form.about(class="form-control", style="height: 200px") }}<br>
+                    {{ form.about.label(class="white") }}<br>
+                    {{ form.about(class="form-control black-form", style="height: 200px;") }}<br>
                     {% for error in form.about.errors %}
                         <div class="alert alert-danger" role="alert">
                             {{ error }}
@@ -46,8 +46,8 @@
                 </p>
 
                 <p>
-                    {{ form.submit(type="submit", class="btn btn-primary") }}
-                    <a href="/profile/{{current_user.name}}"> <button type="button" class="btn btn-primary">Отмена</button></a>
+                    {{ form.submit(type="submit", class="btn btn-danger") }}
+                    <a href="/profile/{{current_user.name}}"> <button type="button" class="btn btn-danger">Отмена</button></a>
                 </p>
                 {{message}}
 

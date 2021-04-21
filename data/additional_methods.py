@@ -36,5 +36,6 @@ def image_size(image, filename, size=(1600, 1600)):
 def random_list(list_, len_=99):
     if not list_:
         return False
+    list_ = list_[:len_]
     shuffle(list_)
     return list_

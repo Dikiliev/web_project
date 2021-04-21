@@ -144,7 +144,6 @@ def show_publication():
     return render_template('publication.html', title='publication')
 
 
-
 @app.route('/notification')
 def notification():
     return render_template('notification.html', title='notification')
@@ -226,6 +225,21 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/like/<int:id_self>/<int:id_news>', methods=['GET', 'POST'])
+@login_required
+def like(id_self, id_news):
+    session = db_session.create_session()
+    f = session.query(Publication).filter(Publication.id == id_news).first()
+    if str(id_self) in f.ids.split(','):
+        f.ids = f.ids.split(',' + str(id_self))[0] + f.ids.split(',' + str(id_self))[-1]
+        f.likes -= 1
+    else:
+        f.ids = f.ids + ',' + str(id_self)
+        f.likes += 1
+    session.commit()
+    return redirect('/' + str(id_news))
 
 
 def main():

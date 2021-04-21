@@ -34,14 +34,16 @@ def index():
 def profile(name):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
+    current_user.load_data()
+    curr_user_data = current_user.other_data
     form = ProfileForm()
     if form.validate_on_submit():
         pass
     if user is None:
-        return render_template('profile.html', title='Профиль', user_data=False)
+        return render_template('profile.html', title='profile', user_data=False)
     user.__init__()
     user_data = user.other_data
-    return render_template('profile.html', title='Профиль', form=form, user=user, user_data=user_data)
+    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])

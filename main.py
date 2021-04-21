@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from data.publications import Publication
-from forms.users import RegisterForm, LoginForm, EditProfileForm
+from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
 from forms.publications import AddPublicationForm
 from forms.search import SearchForm
 
@@ -34,14 +34,14 @@ def index():
 def profile(name):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
-
+    form = ProfileForm()
+    if form.validate_on_submit():
+        pass
     if user is None:
-        return render_template('profile.html', title='profile', user_data=False)
-
+        return render_template('profile.html', title='Профиль', user_data=False)
     user.__init__()
     user_data = user.other_data
-
-    return render_template('profile.html', title=user.name, user_data=user_data)
+    return render_template('profile.html', title='Профиль', form=form, user=user, user_data=user_data)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -97,7 +97,7 @@ def edit_profile():
 def search_user():
     form = SearchForm()
     if form.validate_on_submit():
-        name = form.name.data   # Введенная пользователем имя (часть имени)
+        name = form.name.data  # Введенная пользователем имя (часть имени)
         db_sess = db_session.create_session()
 
         # Пользаветели чьи имена начинаются на name
@@ -120,7 +120,7 @@ def add_publication():
     form = AddPublicationForm()
 
     if form.submit_view.data or form.submit.data:
-        current_user.load_data()    # Загрузка дополнительных данных пользователя
+        current_user.load_data()  # Загрузка дополнительных данных пользователя
 
         # Создание пути к файлу
         photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
@@ -174,7 +174,7 @@ def explore():
     db_sess = db_session.create_session()
     # Достаем все публикации кроме публкации текущего пользователя
     publications = db_sess.query(Publication).filter(Publication.user_id != current_user.id).all()
-    publications = [pub.filename_photo for pub in publications]    # Выбираем оттуда только путь к файлу
+    publications = [pub.filename_photo for pub in publications]  # Выбираем оттуда только путь к файлу
 
     # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)

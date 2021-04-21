@@ -95,8 +95,19 @@ def edit_profile():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search_user():
-    db_sess = db_session.create_session()
     form = SearchForm()
+    if form.validate_on_submit():
+        name = form.name.data   # Введенная пользователем имя (часть имени)
+        db_sess = db_session.create_session()
+
+        # Пользаветели чьи имена начинаются на name
+        users = db_sess.query(User).filter((User.name.like(f'{name}%')) | (User.full_name.like(f'{name}%'))).all()
+        # Добавление пользаветелей чьич именах есть name
+        users += db_sess.query(User).filter(User.id.notin_([user.id for user in users]),
+                                            (User.name.like(f'%{name}%')) | (User.full_name.like(f'%{name}%'))).all()
+
+        return render_template('search.html', title='search', form=form, users=users)
+
     return render_template('search.html', title='search', form=form)
 
 
@@ -109,16 +120,21 @@ def add_publication():
     form = AddPublicationForm()
 
     if form.submit_view.data or form.submit.data:
-        current_user.load_data()
+        current_user.load_data()    # Загрузка дополнительных данных пользователя
+
+        # Создание пути к файлу
         photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
 
+        # Создать фотография если она не создана
         if not is_view:
             image_size(request.files['file'], photo_name)
             is_view = True
 
+        # Если нажата кнопка "Опубликовать"
         if form.submit.data:
             is_view = False
 
+            # Создание публикации...
             db_sess = db_session.create_session()
             publication = Publication()
             publication.user_id = current_user.id
@@ -128,13 +144,17 @@ def add_publication():
             db_sess.add(publication)
             db_sess.commit()
 
+            # Загрузка публикации в дополнительные файлы пользователя (Сделано для удобства,
+            # что бы при посещении профиля не искали его публикации среди всех других сещуствующих)
             user = db_sess.query(User).filter(User.id == current_user.id).first()
             user.load_data()
             user.other_data['publications'].insert(0, photo_name)
             user.save_data()
 
             return redirect(f'/profile/{current_user.name}')
+        # Иначе (Нажата кнопка "Просмореть")
         else:
+            # Показ фотографии
             return render_template('add_publication.html', title='add_publication', form=form, photo_name=photo_name)
     return render_template('add_publication.html', title='add_publication', form=form)
 
@@ -152,8 +172,11 @@ def notification():
 @app.route('/explore')
 def explore():
     db_sess = db_session.create_session()
+    # Достаем все публикации кроме публкации текущего пользователя
     publications = db_sess.query(Publication).filter(Publication.user_id != current_user.id).all()
-    publications = [pub.filename_photo for pub in publications]
+    publications = [pub.filename_photo for pub in publications]    # Выбираем оттуда только путь к файлу
+
+    # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)
 
     return render_template('explore.html', title='explore', publications=publications)
@@ -225,21 +248,6 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
-
-
-@app.route('/like/<int:id_self>/<int:id_news>', methods=['GET', 'POST'])
-@login_required
-def like(id_self, id_news):
-    session = db_session.create_session()
-    f = session.query(Publication).filter(Publication.id == id_news).first()
-    if str(id_self) in f.ids.split(','):
-        f.ids = f.ids.split(',' + str(id_self))[0] + f.ids.split(',' + str(id_self))[-1]
-        f.likes -= 1
-    else:
-        f.ids = f.ids + ',' + str(id_self)
-        f.likes += 1
-    session.commit()
-    return redirect('/' + str(id_news))
 
 
 def main():

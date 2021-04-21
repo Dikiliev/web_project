@@ -35,3 +35,7 @@ class EditProfileForm(FlaskForm):
     phone = StringField('Номер телефона', default='+7 ')
 
     submit = SubmitField('Сохранить')
+
+
+class ProfileForm(FlaskForm):
+    submit_sub = SubmitField('Подписаться')

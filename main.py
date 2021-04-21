@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from data.publications import Publication
-from forms.users import RegisterForm, LoginForm, EditProfileForm
+from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
 from forms.publications import AddPublicationForm
 from forms.search import SearchForm
 
@@ -27,22 +27,30 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title='home')
+    return render_template('index.html', title='Home')
 
 
 @app.route('/profile/<name>', methods=['GET', 'POST'])
 def profile(name):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
-
-    if user is None:
-        return render_template('profile.html', title='profile', user_data=False)
-
+    current_user.load_data()
+    curr_user_data = current_user.other_data
     user.__init__()
     user_data = user.other_data
-
-    return render_template('profile.html', title='profile', user_data=user_data)
-
+    form = ProfileForm()
+    if form.validate_on_submit():
+        if user.id in current_user.other_data['subscriptions']:
+            current_user.other_data['subscriptions'].remove(user.id)
+            user.other_data['followers'].remove(current_user.id)
+        else:
+            current_user.other_data['subscriptions'].append(user.id)
+            user.other_data['followers'].append(current_user.id)
+        user.save_data()
+        current_user.save_data()
+    if user is None:
+        return render_template('profile.html', title='profile', user_data=False)
+    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -90,14 +98,14 @@ def edit_profile():
     current_user.load_data()
     user_data = current_user.other_data
 
-    return render_template('edit_profile.html', title='edit_profile', form=form, user_data=user_data)
+    return render_template('edit_profile.html', title='Изменить профиль', form=form, user_data=user_data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
 def search_user():
     form = SearchForm()
     if form.validate_on_submit():
-        name = form.name.data   # Введенная пользователем имя (часть имени)
+        name = form.name.data  # Введенная пользователем имя (часть имени)
         db_sess = db_session.create_session()
 
         # Пользаветели чьи имена начинаются на name
@@ -108,7 +116,7 @@ def search_user():
 
         return render_template('search.html', title='search', form=form, users=users)
 
-    return render_template('search.html', title='search', form=form)
+    return render_template('search.html', title='Поиск', form=form)
 
 
 is_view = False
@@ -120,7 +128,7 @@ def add_publication():
     form = AddPublicationForm()
 
     if form.submit_view.data or form.submit.data:
-        current_user.load_data()    # Загрузка дополнительных данных пользователя
+        current_user.load_data()  # Загрузка дополнительных данных пользователя
 
         # Создание пути к файлу
         photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
@@ -156,17 +164,17 @@ def add_publication():
         else:
             # Показ фотографии
             return render_template('add_publication.html', title='add_publication', form=form, photo_name=photo_name)
-    return render_template('add_publication.html', title='add_publication', form=form)
+    return render_template('add_publication.html', title='Добавить новость', form=form)
 
 
 @app.route('/show_publication', methods=['GET', 'POST'])
 def show_publication():
-    return render_template('publication.html', title='publication')
+    return render_template('publication.html', title='Публикации')
 
 
 @app.route('/notification')
 def notification():
-    return render_template('notification.html', title='notification')
+    return render_template('notification.html', title='Уведомления')
 
 
 @app.route('/explore')
@@ -174,22 +182,22 @@ def explore():
     db_sess = db_session.create_session()
     # Достаем все публикации кроме публкации текущего пользователя
     publications = db_sess.query(Publication).filter(Publication.user_id != current_user.id).all()
-    publications = [pub.filename_photo for pub in publications]    # Выбираем оттуда только путь к файлу
+    publications = [pub.filename_photo for pub in publications]  # Выбираем оттуда только путь к файлу
 
     # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)
 
-    return render_template('explore.html', title='explore', publications=publications)
+    return render_template('explore.html', title='Публикации', publications=publications)
 
 
 @app.route('/direct')
 def direct():
-    return render_template('direct.html', title='direct')
+    return render_template('direct.html', title='Cообщения')
 
 
 @app.route('/home')
 def home():
-    return render_template('home.html', title='home')
+    return render_template('home.html', title='Home')
 
 
 @app.route('/register', methods=['GET', 'POST'])

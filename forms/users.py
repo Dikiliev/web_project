@@ -38,4 +38,4 @@ class EditProfileForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
-    submit_sub = SubmitField('Подписатся')
+    submit_sub = SubmitField('Подписаться')

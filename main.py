@@ -8,7 +8,7 @@ from forms.publications import AddPublicationForm, ShowPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin, image_size, random_list
+from data.additional_methods import is_latin, image_size, random_list, Theme, next_theme, themes
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -19,6 +19,13 @@ login_manager.init_app(app)
 is_open_dropdown = False
 
 
+theme = themes[0]
+
+
+def get_theme():
+    return theme
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -27,13 +34,17 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title='Home')
+    return render_template('index.html', title='Home', theme=get_theme())
 
 
 @app.route('/profile/<name>', methods=['GET', 'POST'])
 def profile(name):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
+
+    if user is None:
+        return render_template('profile.html', title='profile', theme=get_theme(), user_data=False)
+
     current_user.load_data()
     curr_user_data = current_user.other_data
     user.__init__()
@@ -51,10 +62,7 @@ def profile(name):
         user.save_data()
         current_user.save_data()
 
-    if user is None:
-        return render_template('profile.html', title='profile', user_data=False)
-
-    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
+    return render_template('profile.html', title='profile', theme=get_theme(), form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -103,7 +111,7 @@ def edit_profile():
     current_user.load_data()
     user_data = current_user.other_data
 
-    return render_template('edit_profile.html', title='Изменить профиль', form=form, user_data=user_data)
+    return render_template('edit_profile.html', title='Изменить профиль', theme=get_theme(), form=form, user_data=user_data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -119,9 +127,9 @@ def search_user():
         users += db_sess.query(User).filter(User.id.notin_([user.id for user in users]),
                                             (User.name.like(f'%{name}%')) | (User.full_name.like(f'%{name}%'))).all()
 
-        return render_template('search.html', title='search', form=form, users=users)
+        return render_template('search.html', title='search', theme=get_theme(), form=form, users=users)
 
-    return render_template('search.html', title='Поиск', form=form)
+    return render_template('search.html', title='Поиск', theme=get_theme(), form=form)
 
 
 is_view = False
@@ -168,8 +176,8 @@ def add_publication():
         # Иначе (Нажата кнопка "Просмореть")
         else:
             # Показ фотографии
-            return render_template('add_publication.html', title='add_publication', form=form, photo_name=photo_name)
-    return render_template('add_publication.html', title='Добавить новость', form=form)
+            return render_template('add_publication.html', title='add_publication', theme=get_theme(), form=form, photo_name=photo_name)
+    return render_template('add_publication.html', title='Добавить новость', theme=get_theme(), form=form)
 
 
 @app.route('/show_publication/<id_>', methods=['GET', 'POST'])
@@ -183,8 +191,6 @@ def show_publication(id_):
 
     user = db_sess.query(User).filter(User.id == publication.user_id).first()
 
-    print(form.like_submit.data)
-
     if form.validate_on_submit():
         if form.like_submit.data:
             if publication.id in current_user.other_data['likes']:
@@ -197,7 +203,7 @@ def show_publication(id_):
             current_user.save_data()
             publication.save_data()
 
-    return render_template('publication.html', title='Публикации', form=form, user=user, publication=publication)
+    return render_template('publication.html', title='Публикации', theme=get_theme(), form=form, user=user, publication=publication)
 
 
 @app.route('/view_users/<type_>/<id_>', methods=['GET', 'POST'])
@@ -226,12 +232,12 @@ def view_users(type_, id_):
             title_ = 'Подписчики'
             users = db_sess.query(User).filter(User.id.in_(user.other_data['followers'])).all()
 
-    return render_template('view_users.html', title=type_, users=users, title_=title_, url_closing=url_closing)
+    return render_template('view_users.html', title=type_, theme=get_theme(), users=users, title_=title_, url_closing=url_closing)
 
 
 @app.route('/notification')
 def notification():
-    return render_template('notification.html', title='Уведомления')
+    return render_template('notification.html', title='Уведомления', theme=get_theme())
 
 
 @app.route('/explore')
@@ -244,17 +250,17 @@ def explore():
     # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)
 
-    return render_template('explore.html', title='Публикации', publications=publications)
+    return render_template('explore.html', title='Публикации', theme=get_theme(), publications=publications)
 
 
 @app.route('/direct')
 def direct():
-    return render_template('direct.html', title='Cообщения')
+    return render_template('direct.html', title='Cообщения', theme=get_theme())
 
 
 @app.route('/home')
 def home():
-    return render_template('home.html', title='Home')
+    return render_template('home.html', title='Home', theme=get_theme())
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -262,18 +268,18 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', form=form, title='Регистрация', message='Пароли не совпадают')
+            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(), message='Пароли не совпадают')
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', form=form, title='Регистрация',
+            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(),
                                    message='Почта уже зарегистрирована')
 
         if db_sess.query(User).filter(User.name == form.name.data).first():
-            return render_template('register.html', form=form, title='Регистрация',
+            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(),
                                    message='Имя пользователя занято')
 
         if not is_latin(form.name.data):
-            return render_template('register.html', form=form, title='Регистрация',
+            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(),
                                    message='Именах пользователя можно использовать только буквы(a-z), цифры, симбволы подчерикивания и точки')
 
         user = User()
@@ -290,7 +296,7 @@ def register():
 
         login_user(user, True)
         return redirect('/')
-    return render_template('register.html', form=form, title='Регистрация')
+    return render_template('register.html', form=form, title='Регистрация', theme=get_theme())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -303,9 +309,9 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
-        return render_template('login.html', title='Авторизация', form=form,
+        return render_template('login.html', title='Авторизация', form=form, theme=get_theme(),
                                message='Неправильные данные для авторизации')
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация', form=form, theme=get_theme())
 
 
 @app.route('/logout')
@@ -313,6 +319,15 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/change_theme')
+def change_theme():
+    global theme
+    theme = next_theme(theme)
+
+    return redirect('/home')
+
 
 
 def main():

@@ -7,22 +7,26 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename=theme.css_file) }}">
+
     <title>{{title}}</title>
 
 </head>
 <body>
-<header class="p-3 mb-3 border-bottom border-danger" style="background-color: #1A1A1D; position: fixed; width: 1920px; z-index: 1">
+<header class="p-3 mb-3 border-bottom border-danger" style="background-color: {{theme.background_color}}; position: fixed; width: 1920px; z-index: 1">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         {% if current_user.is_authenticated %}
-            <h1 style="color: #dc3545">E<span style="color: #ffffff">clipse</span></h1>
+            <h1 style="color: {{theme.color}}">E<span class="white">clipse</span></h1>
 
               <a href="/search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" style="width: 350px; position: fixed; right: 900px;">
-                  <button type="button" class="btn btn-outline-danger" style="width: 350px;">Найти...</button>
+                  <button type="button" class="btn btn-outline-{{theme.style}}" style="width: 350px;">Найти...</button>
               </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="position: fixed; right: 100px;">
+                <li><a href="/change_theme" class="nav-link px-3">
+                    <img src="{{ url_for('static', filename='icons/circle.png') }}" width="32" height="32">
+                </a></li>
 
                 <li><a href="/home" class="nav-link px-3">
                     {% if request.path == "/home" %}
@@ -65,7 +69,7 @@
     </div>
 </header>
 <!-- Begin page content -->
-<main role="main" class="container" style="background-color: #1A1A1D; position: relative; top: 80px; max-width: 1920px; min-height: 1000px">
+<main role="main" class="container" style="background-color: {{theme.background_color}}; position: relative; top: 80px; max-width: 1920px; min-height: 1000px">
     {% block content %}
     {% endblock %}
 </main>

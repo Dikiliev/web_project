@@ -9,7 +9,7 @@
             <h1 class="white">{{title_}}</h1>
             {% if users %}
                 {% for user in users %}
-                    <a class="btn btn-dark nav nav-tabs" href="http://127.0.0.1:8080/profile/{{user.name}}" style="margin-top: 10px">
+                    <a class="btn btn-{{theme.style_btn}} nav nav-tabs" href="http://127.0.0.1:8080/profile/{{user.name}}" style="margin-top: 10px">
                         <div class="nav">
 
                                 <div class="nav-item" style="margin-left: 20px">

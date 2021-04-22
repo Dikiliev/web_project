@@ -200,20 +200,19 @@ def show_publication(id_):
     return render_template('publication.html', title='Публикации', form=form, user=user, publication=publication)
 
 
-@app.route('/view_user/<type_>/<id_>', methods=['GET', 'POST'])
-def show_followers(type_, id_):
+@app.route('/view_users/<type_>/<id_>', methods=['GET', 'POST'])
+def view_users(type_, id_):
     db_sess = db_session.create_session()
     current_user.load_data()
 
     users = []
     title_ = ''
-    url_closing = ''
     if type_ == 'likes':
-        publication = db_sess.query(Publication).filter(Publication.id == id_).first
+        publication = db_sess.query(Publication).filter(Publication.id == id_).first()
         publication.load_data()
         users = db_sess.query(User).filter(User.id.in_(publication.other_data['likes'])).all()
         title_ = 'Отметки "Нравится"'
-        url_closing = f'/publication/{publication.id}'
+        url_closing = f'/show_publication/{publication.id}'
     else:
         user = db_sess.query(User).filter(User.id == id_).first()
         user.load_data()

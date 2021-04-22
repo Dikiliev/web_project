@@ -57,10 +57,12 @@
 
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
-                {% for pub in user_data["publications"] %}
+                {% for pub in pubs %}
                     <div class="col">
                       <div>
-                         <img src="{{ url_for('static', filename=pub) }}" width="350" height="350" vspace="5">
+                         <a href="/show_publication/{{pub[0]}}">
+                             <img class="changing-img" src="{{ url_for('static', filename=pub[1]) }}" width="350" height="350" vspace="5">
+                         </a>
                       </div>
                     </div>
                 {% endfor %}

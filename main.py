@@ -49,6 +49,9 @@ def profile(name):
     curr_user_data = current_user.other_data
     user.__init__()
     user_data = user.other_data
+
+    publications = db_sess.query(Publication).filter(Publication.user_id == user.id).all()
+    publications = [[pub.id, pub.filename_photo] for pub in publications]
     
     form = ProfileForm()
     if form.validate_on_submit():
@@ -62,7 +65,8 @@ def profile(name):
         user.save_data()
         current_user.save_data()
 
-    return render_template('profile.html', title='profile', theme=get_theme(), form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
+    return render_template('profile.html', title='profile', theme=get_theme(), form=form, user=user,
+                           user_data=user_data, curr_user_data=curr_user_data, pubs=publications)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])

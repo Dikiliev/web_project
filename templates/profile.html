@@ -32,7 +32,7 @@
             </ol>
             <ol class="nav justify-content-center">
                 <st>{{ user_data.publications|length }} публикации</st>
-                <st href="#">{{ user_data.followers|length }} подписчиков</st>
+                <a href="/show_followers/{{user.name}}"><st>{{ user_data.followers|length }} подписчиков</st></a>
                 <st href="#">{{ user_data.subscriptions|length }} подписок</st>
             </ol>
             <ol class="nav justify-content-left">

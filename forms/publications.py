@@ -4,6 +4,10 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 
 
+class ShowPublicationForm(FlaskForm):
+    like_submit = SubmitField(' ', validators=[DataRequired()])
+
+
 class AddPublicationForm(FlaskForm):
     submit_cancel = SubmitField('Отмена', validators=[DataRequired()])
     file = FileField('Выберите фотографию', validators=[DataRequired()])

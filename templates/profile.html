@@ -32,8 +32,8 @@
             </ol>
             <ol class="nav justify-content-center">
                 <st>{{ user_data.publications|length }} публикации</st>
-                <st href="#">{{ user_data.followers|length }} подписчиков</st>
-                <st href="#">{{ user_data.subscriptions|length }} подписок</st>
+                <a href="/view_user/followers/{{user.id}}" style="margin-top: 10px"> <st>{{ user_data.followers|length }} подписчиков</st> </a>
+                <a href="/view_user/subscribers/{{user.id}}" style="margin-top: 10px"> <st>{{ user_data.subscriptions|length }} подписок</st> </a>
             </ol>
             <ol class="nav justify-content-left">
                 <bl-600>{{ user.full_name }}</bl-600>

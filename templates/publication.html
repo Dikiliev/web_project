@@ -1,27 +1,52 @@
 {% extends "base.html" %}
 
+
+
+
 {% block content %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-danger" style="width: 1900px; margin-left: -15px">
         <div>
-            <img src="{{ url_for('static', filename=current_user.filename_photo) }}" width="1000" height="1000" style="margin-top: 20px;">
+            <a href="/explore"><img src="{{ url_for('static', filename='icons/close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
+        </div>
+        <div>
+            <img src="{{ url_for('static', filename=publication.filename_photo) }}" width="900" height="900" style="margin-top: 20px;">
         </div>
 
-        <nav aria-label="nav justify-content-center">
+        <nav aria-label="nav justify-content-left" style="max-width: 400px; width: 400px">
 
             <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <img src="{{ url_for('static', filename=current_user.filename_photo) }}" class="rounded-circle" width="200" height="200" style="margin-top: 20px;">
+                <img src="{{ url_for('static', filename=user.filename_photo) }}" class="rounded-circle" width="200" height="200" style="margin-top: 20px;">
             </ol>
 
             <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <li class="nav-item"> <a>{{ current_user.name }}</a></li>
+                <li class="nav-item white"> <name-text>{{ user.name }}</name-text></li>
             </ol>
-
-
-
 
             <ol class="nav justify-content-left">
-                <st>Где то там поисание чето тыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы  ыыыыыыыыывыв фыв фыам должно быть типа птого наверное дума </st>
+                <st>{{user.name + ":  " + publication.about}}</st>
             </ol>
+
+            <ol class="nav justify-content-left" style=" position: absolute; margin-left: 50px; bottom: 120px">
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    {% if current_user.id in publication.other_data.likes %}
+                        <p>{{ form.like_submit
+                            (type="submit", class="btn",
+                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/like_true.png') + ");" ) }}
+                        </p>
+                    {% else %}
+                        <p>{{ form.like_submit
+                            (type="submit", class="btn",
+                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/like_false.png') + ");" ) }}
+                        </p>
+                    {% endif %}
+                </form>
+            </ol>
+
+            <ol class="nav justify-content-left" style="position: absolute; bottom: 80px;">
+                <st>{{publication.other_data.likes|length}} отметок "Нравится"</st>
+            </ol>
+
         </nav>
 
     </header>

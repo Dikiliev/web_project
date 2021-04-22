@@ -4,7 +4,7 @@ from data import db_session
 from data.users import User
 from data.publications import Publication
 from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
-from forms.publications import AddPublicationForm
+from forms.publications import AddPublicationForm, ShowPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
@@ -55,6 +55,7 @@ def profile(name):
         return render_template('profile.html', title='profile', user_data=False)
 
     return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
+
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -171,9 +172,62 @@ def add_publication():
     return render_template('add_publication.html', title='Добавить новость', form=form)
 
 
-@app.route('/show_publication', methods=['GET', 'POST'])
-def show_publication():
-    return render_template('publication.html', title='Публикации')
+@app.route('/show_publication/<id_>', methods=['GET', 'POST'])
+def show_publication(id_):
+    form = ShowPublicationForm()
+    db_sess = db_session.create_session()
+
+    publication = db_sess.query(Publication).filter(Publication.id == int(id_)).first()
+    publication.__init__()
+    current_user.load_data()
+
+    user = db_sess.query(User).filter(User.id == publication.user_id).first()
+
+    print(form.like_submit.data)
+
+    if form.validate_on_submit():
+        if form.like_submit.data:
+            if publication.id in current_user.other_data['likes']:
+                publication.other_data['likes'].remove(current_user.id)
+                current_user.other_data['likes'].remove(publication.id)
+            else:
+                publication.other_data['likes'].append(current_user.id)
+                current_user.other_data['likes'].append(publication.id)
+
+            current_user.save_data()
+            publication.save_data()
+
+    return render_template('publication.html', title='Публикации', form=form, user=user, publication=publication)
+
+
+@app.route('/view_user/<type_>/<id_>', methods=['GET', 'POST'])
+def show_followers(type_, id_):
+    db_sess = db_session.create_session()
+    current_user.load_data()
+
+    users = []
+    title_ = ''
+    url_closing = ''
+    if type_ == 'likes':
+        publication = db_sess.query(Publication).filter(Publication.id == id_).first
+        publication.load_data()
+        users = db_sess.query(User).filter(User.id.in_(publication.other_data['likes'])).all()
+        title_ = 'Отметки "Нравится"'
+        url_closing = f'/publication/{publication.id}'
+    else:
+        user = db_sess.query(User).filter(User.id == id_).first()
+        user.load_data()
+        url_closing = f'/profile/{user.name}'
+
+        if type_ == 'subscribers':
+            title_ = 'Подписки'
+            users = db_sess.query(User).filter(User.id.in_(user.other_data['subscriptions'])).all()
+
+        elif type_ == 'followers':
+            title_ = 'Подписчики'
+            users = db_sess.query(User).filter(User.id.in_(user.other_data['followers'])).all()
+
+    return render_template('view_users.html', title=type_, users=users, title_=title_, url_closing=url_closing)
 
 
 @app.route('/notification')
@@ -186,7 +240,7 @@ def explore():
     db_sess = db_session.create_session()
     # Достаем все публикации кроме публкации текущего пользователя
     publications = db_sess.query(Publication).filter(Publication.user_id != current_user.id).all()
-    publications = [pub.filename_photo for pub in publications]  # Выбираем оттуда только путь к файлу
+    publications = [[pub.id, pub.filename_photo] for pub in publications]  # Выбираем оттуда только id и путь к файлу
 
     # Перемещиваем случайным образом и обрезаем список до заданной длины (по умолчанию 99)
     publications = random_list(publications)

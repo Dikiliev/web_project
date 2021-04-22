@@ -38,7 +38,7 @@ def profile(name):
     curr_user_data = current_user.other_data
     user.__init__()
     user_data = user.other_data
-    
+
     form = ProfileForm()
     if form.validate_on_submit():
         if user.id in current_user.other_data['subscriptions']:
@@ -54,7 +54,9 @@ def profile(name):
     if user is None:
         return render_template('profile.html', title='profile', user_data=False)
 
-    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data, curr_user_data=curr_user_data)
+    return render_template('profile.html', title='profile', form=form, user=user, user_data=user_data,
+                           curr_user_data=curr_user_data)
+
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -313,6 +315,15 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/show_followers/<user_name>', methods=['GET', 'POST'])
+def show_followers(user_name):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.name == user_name).first()
+    user.__init__()
+    subs = user.other_data['subscriptions']
+    return render_template('followers.html', subs=subs, title="Подписчики")
 
 
 def main():

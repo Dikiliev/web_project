@@ -33,6 +33,13 @@ bl-300
 
 }
 
+name-text
+{
+    color: #eeeeee;
+    font-size: 50px;
+    font-weight: 300;
+}
+
 .white
 {
     color: #ffffff

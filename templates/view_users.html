@@ -4,7 +4,7 @@
     <div class="album py-5">
         <nav class="container">
             <div>
-                <a href={{url_closing}}><img src="{{ url_for('static', filename='icons/close.png') }}" width="50" height="50" style="position: absolute; left: 200px;"></a>
+                <a href={{url_closing}}><img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="position: absolute; left: 200px;"></a>
             </div>
             <h1 class="white">{{title_}}</h1>
             {% if users %}

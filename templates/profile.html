@@ -2,7 +2,7 @@
 
 {% block content %}
 {% if user_data %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-danger" style="margin-left: -15px; width: 1900px;">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-{{theme.style}}" style="margin-left: -15px; width: 1900px;">
         <div>
             <img src="{{ url_for('static', filename=user.filename_photo) }}" width="200" height="200" class="rounded-circle" style="margin-top: 20px;">
         </div>
@@ -11,7 +11,7 @@
                 <li class="nav-item"> <name-text>{{ user.name }}</name-text></li>
                 {% if user.id == current_user.id %}
                     <li class="nav-item"> <a href="/edit_profile">
-                        <button type="button" class="btn btn-outline-danger" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
+                        <button type="button" class="btn btn-outline-{{theme.style}}" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
                     </a></li>
                 {% elif user.id in curr_user_data.subscriptions %}
                     <form action="" method="post">
@@ -47,7 +47,7 @@
     {% if user.id == current_user.id %}
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-{{theme.style}}" style="margin-left: -15px; width: 1900px;">
                 <a href="/add_publication">
-                    <button type="button" class="btn btn-danger" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
+                    <button type="button" class="btn btn-{{theme.style}}" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
                 </a>
 
         </header>

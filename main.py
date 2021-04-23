@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from data import db_session
 from data.users import User
 from data.publications import Publication
+from data.notifications import Notification
 from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
 from forms.publications import AddPublicationForm, ShowPublicationForm, EditPublicationForm
 from forms.search import SearchForm
@@ -59,9 +60,24 @@ def profile(name):
         if user.id in current_user.other_data['subscriptions']:
             current_user.other_data['subscriptions'].remove(user.id)
             user.other_data['followers'].remove(current_user.id)
+
+            # Удаление уведомления
+            notification = db_sess.query(Notification).filter(Notification.publication_id == -1,
+                                                              Notification.sender_id == current_user.id,
+                                                              Notification.recipient_id == user.id)
+            db_sess.delete(notification)
+            db_sess.commit()
         else:
             current_user.other_data['subscriptions'].append(user.id)
             user.other_data['followers'].append(current_user.id)
+
+            # Добавление уведомления
+            notification = Notification()
+            notification.publication_id = -1
+            notification.sender_id = current_user.id
+            notification.recipient_id = user.id
+            db_sess.add(notification)
+            db_sess.commit()
 
         user.save_data()
         current_user.save_data()
@@ -233,9 +249,22 @@ def show_publication(id_):
             if publication.id in current_user.other_data['likes']:
                 publication.other_data['likes'].remove(current_user.id)
                 current_user.other_data['likes'].remove(publication.id)
+
+                # Удаление уведомления
+                notification = db_sess.query(Notification).filter(Notification.publication_id == publication.id,
+                                                                  Notification.sender_id == current_user.id,
+                                                                  Notification.recipient_id == user.id)
             else:
                 publication.other_data['likes'].append(current_user.id)
                 current_user.other_data['likes'].append(publication.id)
+
+                # Добавление уведомления
+                notification = Notification()
+                notification.publication_id = publication.id
+                notification.sender_id = current_user.id
+                notification.recipient_id = user.id
+                db_sess.add(notification)
+                db_sess.commit()
 
             current_user.save_data()
             publication.save_data()
@@ -274,8 +303,20 @@ def view_users(type_, id_):
 
 
 @app.route('/notification')
-def notification():
-    return render_template('notification.html', title='Уведомления', theme=get_theme())
+def show_notification():
+    db_sess = db_session.create_session()
+    notifications_ = db_sess.query(Notification).filter(Notification.recipient_id == current_user.id).all()
+    notifications = []
+    for notification in notifications_:
+        user = db_sess.query(User).filter(User.id == notification.recipient_id).first()
+        if notification.publication_id == -1:
+            publication = False
+        else:
+            publication = db_sess.query(Publication).filter(Publication.id == notification.publication_id).first()
+
+        notifications.append([user, notification, publication])
+
+    return render_template('notification.html', title='Уведомления', theme=get_theme(), notifications=notifications)
 
 
 @app.route('/explore')

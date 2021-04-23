@@ -5,13 +5,15 @@
     <div class="album py-5">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
-                {% for pub in publications %}
-                    <div class="col">
-                      <a href="/show_publication/{{pub[0]}}">
-                          <img class="changing-img" src="{{ url_for('static', filename=pub[1]) }}" width="350" height="350" vspace="2.5">
-                      </a>
-                    </div>
-                {% endfor %}
+                {% if publications %}
+                    {% for pub in publications %}
+                        <div class="col">
+                          <a href="/show_publication/{{pub[0]}}">
+                              <img class="changing-img" src="{{ url_for('static', filename=pub[1]) }}" width="350" height="350" vspace="2.5">
+                          </a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
       </div>

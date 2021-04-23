@@ -1,0 +1,63 @@
+st
+{
+    color: #1a1a1d;
+    font-size: 21px;
+    margin-left: 50px;
+    margin-top: 10px;
+
+}
+
+bl-600
+{
+    color: #1a1a1d;
+    font-size: 28px;
+    margin-left: 50px;
+    margin-top: 30px;
+    font-weight: 600;
+}
+
+bl-700
+{
+    color: #1a1a1d;
+    font-size: 25px;
+    margin-left: 50px;
+    font-weight: 500;
+}
+
+bl-300
+{
+    color: #1a1a1d;
+    font-size: 20px;
+    font-weight: 300;
+    margin-left: 50px;
+
+}
+
+name-text
+{
+    color: #1a1a1d;
+    font-size: 50px;
+    font-weight: 300;
+}
+
+.white
+{
+    color: #1a1a1d;
+}
+
+.black-form
+{
+    background-color: #eeeeee;
+    border-color: #198754;
+    color: #1a1a1d;
+}
+
+.changing-img
+{
+
+}
+
+.changing-img:hover
+{
+    padding: 2px;
+}

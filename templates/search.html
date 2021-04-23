@@ -14,12 +14,12 @@
                     {% endfor %}
                 </p>
 
-                <p>{{ form.submit(type="submit", class="btn btn-danger", style="width: 200px") }}</p>
+                <p>{{ form.submit(type="submit", class="btn btn-" + theme.style, style="width: 200px") }}</p>
                 {{message}}
 
                 {% if  form.validate_on_submit() %}
                     {% for user in users %}
-                        <a class="btn btn-dark nav nav-tabs" href="profile/{{user.name}}" style="margin-top: 10px">
+                        <a class="btn btn-{{theme.style_btn}} nav nav-tabs" href="profile/{{user.name}}" style="margin-top: 10px">
                             <div class="nav">
 
                                     <div class="nav-item" style="margin-left: 20px">

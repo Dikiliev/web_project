@@ -4,9 +4,9 @@
 
 
 {% block content %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-danger" style="width: 1900px; margin-left: -15px">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-{{theme.style}}" style="width: 1900px; margin-left: -15px">
         <div>
-            <a href="/explore"><img src="{{ url_for('static', filename='icons/close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
+            <a href="/explore"><img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
         </div>
         <div>
             <img src="{{ url_for('static', filename=publication.filename_photo) }}" width="900" height="900" style="margin-top: 20px;">
@@ -19,7 +19,7 @@
             </ol>
 
             <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <li class="nav-item white"> <name-text>{{ user.name }}</name-text></li>
+                <li class="nav-item white"> <a href="/profile/{{user.name}}"><name-text>{{ user.name }}</name-text></li></a>
             </ol>
 
             <ol class="nav justify-content-left">
@@ -32,12 +32,12 @@
                     {% if current_user.id in publication.other_data.likes %}
                         <p>{{ form.like_submit
                             (type="submit", class="btn",
-                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/like_true.png') + ");" ) }}
+                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/' + theme.icon_name + 'like_true.png') + ");" ) }}
                         </p>
                     {% else %}
                         <p>{{ form.like_submit
                             (type="submit", class="btn",
-                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/like_false.png') + ");" ) }}
+                            style="width: 50px; height: 50px; background: no-repeat center/100% url(" + url_for('static', filename='icons/' + theme.icon_name + 'like_false.png') + ");" ) }}
                         </p>
                     {% endif %}
                 </form>

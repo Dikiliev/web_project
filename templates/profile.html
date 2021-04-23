@@ -2,16 +2,16 @@
 
 {% block content %}
 {% if user_data %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-danger" style="margin-left: -15px; width: 1900px;">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-{{theme.style}}" style="margin-left: -15px; width: 1900px;">
         <div>
             <img src="{{ url_for('static', filename=user.filename_photo) }}" width="200" height="200" class="rounded-circle" style="margin-top: 20px;">
         </div>
         <nav aria-label="nav justify-content-center">
             <ol class="nav justify-content-center" style="margin-left: 50px; font-size: 44px;">
-                <li class="nav-item"> <a style="color: #ffffff">{{ user.name }}</a></li>
+                <li class="nav-item"> <name-text>{{ user.name }}</name-text></li>
                 {% if user.id == current_user.id %}
                     <li class="nav-item"> <a href="/edit_profile">
-                        <button type="button" class="btn btn-outline-danger" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
+                        <button type="button" class="btn btn-outline-{{theme.style}}" style="margin-left: 70px; width: 300px; height: 45px;">Редактировать профиль</button>
                     </a></li>
                 {% elif user.id in curr_user_data.subscriptions %}
                     <form action="" method="post">
@@ -24,11 +24,11 @@
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
                         <li class="nav-item"> <a>
-                            {{ form.submit_sub(type="submit", value="Подписатся", class="btn btn-primary", style="margin-left: 70px; width: 300px; height: 45px;") }}
+                            {{ form.submit_sub(type="submit", value="Подписатся", class="btn btn-" + theme.style, style="margin-left: 70px; width: 300px; height: 45px;") }}
                         </a></li>
                     </form>
                 {% endif %}
-                <li class="nav-item"> <a href="/logout" style="margin-top: 17.5px; margin-left: 10px; width: 100px; height: 45px;" class="btn btn-outline-danger nav-link px-3">Выйти</a></li>
+                <li class="nav-item"> <a href="/logout" style="margin-top: 17.5px; margin-left: 10px; width: 100px; height: 45px;" class="btn btn-outline-{{theme.style}} nav-link px-3">Выйти</a></li>
             </ol>
             <ol class="nav justify-content-center">
                 <st>{{ user_data.publications|length }} публикации</st>
@@ -47,9 +47,9 @@
     </header>
 
     {% if user.id == current_user.id %}
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-danger" style="margin-left: -15px; width: 1900px;">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-{{theme.style}}" style="margin-left: -15px; width: 1900px;">
                 <a href="/add_publication">
-                    <button type="button" class="btn btn-danger" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
+                    <button type="button" class="btn btn-{{theme.style}}" style="margin-top: -25px; width: 400px; height: 45px;">Добавить публикацию</button>
                 </a>
 
         </header>
@@ -59,10 +59,12 @@
 
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
-                {% for pub in user_data["publications"] %}
+                {% for pub in pubs %}
                     <div class="col">
                       <div>
-                         <img src="{{ url_for('static', filename=pub) }}" width="350" height="350" vspace="5">
+                         <a href="/show_publication/{{pub[0]}}">
+                             <img class="changing-img" src="{{ url_for('static', filename=pub[1]) }}" width="350" height="350" vspace="5">
+                         </a>
                       </div>
                     </div>
                 {% endfor %}
@@ -70,10 +72,10 @@
         </div>
       </div>
 {% else %}
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-bottom border-{{theme.style}}">
             <nav aria-label="nav justify-content-center">
-                <ol class="nav justify-content-left">
-                    <bl-36px>Пользователь '{{ request.path.split('/')[-1] }}' не найден</bl-36px>
+                <ol class="nav justify-content-center">
+                    <bl-600>Пользователь '{{ request.path.split('/')[-1] }}' не найден</bl-600>
                 </ol>
             </nav>
         </header>

@@ -18,7 +18,6 @@ login_manager.init_app(app)
 # Флаги
 is_open_dropdown = False
 
-
 theme = themes[0]
 
 
@@ -115,7 +114,8 @@ def edit_profile():
     current_user.load_data()
     user_data = current_user.other_data
 
-    return render_template('edit_profile.html', title='Изменить профиль', theme=get_theme(), form=form, user_data=user_data)
+    return render_template('edit_profile.html', title='Изменить профиль', theme=get_theme(), form=form,
+                           user_data=user_data)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -180,7 +180,8 @@ def add_publication():
         # Иначе (Нажата кнопка "Просмореть")
         else:
             # Показ фотографии
-            return render_template('add_publication.html', title='add_publication', theme=get_theme(), form=form, photo_name=photo_name)
+            return render_template('add_publication.html', title='add_publication', theme=get_theme(), form=form,
+                                   photo_name=photo_name)
     return render_template('add_publication.html', title='Добавить новость', theme=get_theme(), form=form)
 
 
@@ -207,7 +208,8 @@ def show_publication(id_):
             current_user.save_data()
             publication.save_data()
 
-    return render_template('publication.html', title='Публикации', theme=get_theme(), form=form, user=user, publication=publication)
+    return render_template('publication.html', title='Публикации', theme=get_theme(), form=form, user=user,
+                           publication=publication)
 
 
 @app.route('/view_users/<type_>/<id_>', methods=['GET', 'POST'])
@@ -236,12 +238,23 @@ def view_users(type_, id_):
             title_ = 'Подписчики'
             users = db_sess.query(User).filter(User.id.in_(user.other_data['followers'])).all()
 
-    return render_template('view_users.html', title=type_, theme=get_theme(), users=users, title_=title_, url_closing=url_closing)
+    return render_template('view_users.html', title=type_, theme=get_theme(), users=users, title_=title_,
+                           url_closing=url_closing)
 
 
 @app.route('/notification')
 def notification():
-    return render_template('notification.html', title='Уведомления', theme=get_theme())
+    db_sess = db_session.create_session()
+    notifications_ = db_sess.query(Notification).filter(Notification.recipient_id == current_user.id).all()
+    notifications = []
+    for notification in notifications_:
+        user = db_sess.query(User).filter(User.id == notification.recipient_id).first()
+        if notification.publication_id == -1:
+            publication = False
+        else:
+            publication = db_sess.query(Publication).filter(Publication.id == notification.publication_id).first()
+        notifications.append([user.name, notification, publication])
+    return render_template('notification.html', title='Уведомления', theme=get_theme(), notifications=notifications)
 
 
 @app.route('/explore')
@@ -272,7 +285,8 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(), message='Пароли не совпадают')
+            return render_template('register.html', form=form, title='Регистрация', theme=get_theme(),
+                                   message='Пароли не совпадают')
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', form=form, title='Регистрация', theme=get_theme(),
@@ -331,7 +345,6 @@ def change_theme():
     theme = next_theme(theme)
 
     return redirect('/home')
-
 
 
 def main():

@@ -6,7 +6,14 @@
 {% block content %}
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-{{theme.style}}" style="width: 1900px; margin-left: -15px">
         <div>
-            <a href="/explore"><img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
+            {% if current_user.id == publication.user_id %}
+                <a href="/profile/{{current_user.name}}">
+                    <img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
+            {% else %}
+                <a href="/explore">
+                    <img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
+            {% endif %}
+
         </div>
         <div>
             <img src="{{ url_for('static', filename=publication.filename_photo) }}" width="900" height="900" style="margin-top: 20px;">

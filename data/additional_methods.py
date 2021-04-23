@@ -52,12 +52,14 @@ def get_date(date):
         result = f'{period.days} дней назад'
     elif period.days == 1:
         result = f'День назад'
-    elif period.hour > 1:
-        result = f'{period.hour} часов назад'
-    elif period.hour == 1:
+    elif period.seconds // 3600 > 1:
+        result = f'{period.seconds // 3600} часов назад'
+    elif period.seconds // 3600 == 1:
         result = f'Час назад'
-    elif period.minute > 1:
-        result = f'{period.minute} минут назад'
+    elif period.seconds // 60 > 1:
+        result = f'{period.seconds // 60} минут назад'
+    elif period.seconds > 1:
+        result = f'{period.seconds} секунды назад'
     else:
         result = f'Только что'
 

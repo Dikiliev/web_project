@@ -51,6 +51,7 @@ def profile(name):
     user_data = user.other_data
 
     publications = db_sess.query(Publication).filter(Publication.user_id == user.id).all()
+    publications = sorted(publications, key=lambda p: p.created_date, reverse=True)
     publications = [[pub.id, pub.filename_photo] for pub in publications]
 
     form = ProfileForm()

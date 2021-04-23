@@ -8,7 +8,7 @@ from forms.publications import AddPublicationForm, ShowPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin, image_size, random_list
+from data.additional_methods import is_latin, image_size, random_list, next_theme, themes
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'

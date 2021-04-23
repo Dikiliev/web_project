@@ -4,11 +4,11 @@ from data import db_session
 from data.users import User
 from data.publications import Publication
 from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
-from forms.publications import AddPublicationForm, ShowPublicationForm
+from forms.publications import AddPublicationForm, ShowPublicationForm, EditPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin, image_size, random_list, next_theme, themes
+from data.additional_methods import is_latin, image_size, random_list, next_theme, themes, get_date
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -184,6 +184,37 @@ def add_publication():
     return render_template('add_publication.html', title='Добавить новость', theme=get_theme(), form=form)
 
 
+@app.route('/edit_publication/<id_>', methods=['GET', 'POST'])
+def edit_publication(id_):
+    form = EditPublicationForm()
+
+    db_sess = db_session.create_session()
+    publication = db_sess.query(Publication).filter(Publication.id == int(id_)).first()
+
+    if form.submit.data:
+
+        # Редактирование...
+        print(form.about.data)
+        publication.about = form.about.data
+        print(publication.about)
+        db_sess.commit()
+
+        return redirect(f'/profile/{current_user.name}')
+
+    if form.submit_delete.data:
+        # Удаление...
+
+        db_sess.delete(publication)
+        db_sess.commit()
+
+        return redirect(f'/profile/{current_user.name}')
+
+    form.about.data = publication.about
+    photo_name = publication.filename_photo
+
+    return render_template('edit_publication.html', title='Редактировать', theme=get_theme(), form=form, photo_name=photo_name)
+
+
 @app.route('/show_publication/<id_>', methods=['GET', 'POST'])
 def show_publication(id_):
     form = ShowPublicationForm()
@@ -194,6 +225,7 @@ def show_publication(id_):
     current_user.load_data()
 
     user = db_sess.query(User).filter(User.id == publication.user_id).first()
+    date = get_date(publication.created_date)
 
     if form.validate_on_submit():
         if form.like_submit.data:
@@ -207,7 +239,8 @@ def show_publication(id_):
             current_user.save_data()
             publication.save_data()
 
-    return render_template('publication.html', title='Публикации', theme=get_theme(), form=form, user=user, publication=publication)
+    return render_template('publication.html', title='Публикация', theme=get_theme(),
+                           form=form, user=user, publication=publication, date=date)
 
 
 @app.route('/view_users/<type_>/<id_>', methods=['GET', 'POST'])

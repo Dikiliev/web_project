@@ -16,3 +16,9 @@ class AddPublicationForm(FlaskForm):
     about = TextAreaField('Описание:', validators=[DataRequired()])
 
     submit = SubmitField('Опубликовать', validators=[DataRequired()])
+
+
+class EditPublicationForm(FlaskForm):
+    about = TextAreaField('Описание:', validators=[DataRequired()])
+    submit = SubmitField('Сохранить', validators=[DataRequired()])
+    submit_delete = SubmitField('Удалить публикацию', validators=[DataRequired()])

@@ -22,11 +22,17 @@
                 <li class="nav-item white"> <a href="/profile/{{user.name}}"><name-text>{{ user.name }}</name-text></li></a>
             </ol>
 
-            <ol class="nav justify-content-left">
+            {% if current_user.id == publication.user_id %}
+                <ol class="nav justify-content-center">
+                    <a href="/edit_publication/{{publication.id}}">
+                        <button class="btn btn-{{theme.style}}" style="margin-top: 20px; margin-left: 70px; width: 300px">Редактировать</button></a>
+                </ol>
+            {% endif %}
+            <ol class="nav justify-content-left" style="margin-top: 10px;">
                 <st>{{user.name + ":  " + publication.about}}</st>
             </ol>
 
-            <ol class="nav justify-content-left" style=" position: absolute; margin-left: 50px; bottom: 120px">
+            <ol class="nav justify-content-left" style=" position: absolute; margin-left: 50px; bottom: 160px">
                 <form action="" method="post">
                     {{ form.hidden_tag() }}
                     {% if current_user.id in publication.other_data.likes %}
@@ -43,8 +49,11 @@
                 </form>
             </ol>
 
-            <ol class="nav justify-content-left" style="position: absolute; bottom: 80px;">
+            <ol class="nav justify-content-left" style="position: absolute; bottom: 120px;">
                 <a href="/view_users/likes/{{publication.id}}"> <st>{{publication.other_data.likes|length}} отметок "Нравится"</st></a>
+            </ol>
+            <ol class="nav justify-content-left" style="position: absolute; bottom: 80px;">
+                <bl-300 style="font-size: 18px; font-weight: 200;">{{date}}</bl-300>
             </ol>
 
         </nav>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="album py-5">
+        <div class="container">
+            <h1 class="white">Добавление публикации</h1>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="col">
+                    <img src="{{ url_for('static', filename=photo_name) }}" width="1000" height="1000" vspace="5">
+                </div>
+
+                <p>
+                    {{ form.about.label(class="white") }}<br>
+                    {{ form.about(class="form-control black-form", style="height: 200px;") }}<br>
+                    {% for error in form.about.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </p>
+
+                <p>
+                    {{ form.submit(type="submit", class="btn btn-" + theme.style) }}
+                    {{ form.submit_delete(type="submit", class="btn btn-" + theme.style, style="margin-left: 30px") }}
+
+                </p>
+                {{message}}
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

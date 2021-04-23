@@ -7,7 +7,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="width: 1065px">
                 {% for pub in publications %}
                     <div class="col">
-                      <a href="/show_publication/{{pub[0]}}">
+                      <a href="/show_publication/{{pub[0]}}" target="_blank">
                           <img class="changing-img" src="{{ url_for('static', filename=pub[1]) }}" width="350" height="350" vspace="2.5">
                       </a>
                     </div>

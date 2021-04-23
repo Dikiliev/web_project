@@ -1,5 +1,6 @@
 from random import shuffle
 from PIL import Image
+import datetime
 
 
 def is_latin(text):
@@ -40,6 +41,27 @@ def random_list(list_, len_=99):
     list_ = list_[:len_]
     shuffle(list_)
     return list_
+
+
+def get_date(date):
+    period = datetime.datetime.now() - date
+    result = ''
+    if period.days > 7:
+        result = date.date
+    elif period.days > 1:
+        result = f'{period.days} дней назад'
+    elif period.days == 1:
+        result = f'День назад'
+    elif period.hour > 1:
+        result = f'{period.hour} часов назад'
+    elif period.hour == 1:
+        result = f'Час назад'
+    elif period.minute > 1:
+        result = f'{period.minute} минут назад'
+    else:
+        result = f'Только что'
+
+    return result.upper()
 
 
 class Theme:

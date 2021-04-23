@@ -5,17 +5,28 @@
         <nav class="container">
             <h1 class="white">{{title_}}</h1>
             {% if notifications %}
-                {% for not in notifications %}
+                {% for user, not, pub, date in notifications %}
                     <a class="btn btn-{{theme.style_btn}} nav nav-tabs" href="http://127.0.0.1:8080/profile/{{user.name}}" style="margin-top: 10px">
                         <div class="nav">
 
-                                <div class="nav-item" style="margin-left: 20px">
-                                    <img src="{{ url_for('static', filename=not[0].filename_photo) }}" width="60" height="60" class="rounded-circle">
-                                </div>
-                                <div class="nav flex-column" align="left">
-                                    <bl-700>{{not[0].name}}</bl-700>
-                                    <bl-300>{{Подписался }}</bl-300>
-                                </div>
+                            <div class="nav-item" style="margin-left: 20px">
+                                <img src="{{ url_for('static', filename=user.filename_photo) }}" width="60" height="60" class="rounded-circle">
+                            </div>
+                            {% if not pub %}
+                            <div class="nav flex-column" align="left">
+                                <bl-700>{{user.name}}</bl-700>
+                                <bl-300>Подписался(-ась) на ваши обновления <span style="font-size: 15px; opacity: 0.5;"> - {{date}}</span></bl-300>
+                            </div>
+
+                            {% else %}
+                            <div class="nav flex-column" align="left">
+                                <bl-700>{{user.name}}</bl-700>
+                                <bl-300>Понравилась ваша публикация <span style="font-size: 15px; opacity: 0.5;"> - {{date}}</span></bl-300>
+                            </div>
+                            <div class="nav flex-column"  align="left" style="margin-left: 480px">
+                                <img src="{{ url_for('static', filename=pub.filename_photo) }}" width="60" height="60">
+                            </div>
+                            {% endif %}
                         </div>
                     </a>
                 {% endfor %}

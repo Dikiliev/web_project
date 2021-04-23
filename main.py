@@ -306,15 +306,16 @@ def view_users(type_, id_):
 def show_notification():
     db_sess = db_session.create_session()
     notifications_ = db_sess.query(Notification).filter(Notification.recipient_id == current_user.id).all()
+    notifications_ = sorted(notifications_, key=lambda n: n.created_date, reverse=True)
     notifications = []
     for notification in notifications_:
-        user = db_sess.query(User).filter(User.id == notification.recipient_id).first()
+        user = db_sess.query(User).filter(User.id == notification.sender_id).first()
         if notification.publication_id == -1:
             publication = False
         else:
             publication = db_sess.query(Publication).filter(Publication.id == notification.publication_id).first()
-
-        notifications.append([user, notification, publication])
+        date = get_date(notification.created_date)
+        notifications.append([user, notification, publication, date])
 
     return render_template('notification.html', title='Уведомления', theme=get_theme(), notifications=notifications)
 

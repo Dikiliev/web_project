@@ -58,6 +58,8 @@ def get_date(date):
         result = f'Час назад'
     elif period.seconds // 60 > 1:
         result = f'{period.seconds // 60} минут назад'
+    elif period.seconds // 60 == 1:
+        result = f'минуту назад'
     elif period.seconds > 1:
         result = f'{period.seconds} секунды назад'
     else:

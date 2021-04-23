@@ -8,7 +8,7 @@ from forms.publications import AddPublicationForm, ShowPublicationForm
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from data.additional_methods import is_latin, image_size, random_list, Theme, next_theme, themes
+from data.additional_methods import is_latin, image_size, random_list
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -52,7 +52,7 @@ def profile(name):
 
     publications = db_sess.query(Publication).filter(Publication.user_id == user.id).all()
     publications = [[pub.id, pub.filename_photo] for pub in publications]
-    
+
     form = ProfileForm()
     if form.validate_on_submit():
         if user.id in current_user.other_data['subscriptions']:

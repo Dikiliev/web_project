@@ -340,7 +340,15 @@ def direct():
 
 @app.route('/home')
 def home():
-    return render_template('home.html', title='Home', theme=get_theme())
+    db_sess = db_session.create_session()
+    current_user.load_data()
+    publications = db_sess.query(Publication).filter(Publication.user_id.in_((current_user.other_data['subscriptions']))).all()
+    pubs = []
+    for pub in publications:
+        user = db_sess.query(User).filter(User.id == pub.user_id).first()
+        date = get_date(pub.created_date)
+        pubs.append([pub, user, date])
+    return render_template('home.html', title='Home', theme=get_theme(), pubs=pubs)
 
 
 @app.route('/register', methods=['GET', 'POST'])

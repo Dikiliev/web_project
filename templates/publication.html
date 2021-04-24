@@ -6,13 +6,8 @@
 {% block content %}
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom border-{{theme.style}}" style="width: 1900px; margin-left: -15px">
         <div>
-            {% if current_user.id == publication.user_id %}
-                <a href="/profile/{{current_user.name}}">
-                    <img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
-            {% else %}
-                <a href="/explore">
-                    <img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
-            {% endif %}
+            <a href={{request.referrer}}>
+                <img src="{{ url_for('static', filename='icons/' + theme.icon_name + 'close.png') }}" width="50" height="50" style="margin-top: 20px; margin-right: 50px;"></a>
 
         </div>
         <div>

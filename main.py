@@ -346,7 +346,8 @@ def home():
     pubs = []
     for pub in publications:
         user = db_sess.query(User).filter(User.id == pub.user_id).first()
-        pubs.append([pub, user, 'дата'])
+        date = get_date(pub.created_date)
+        pubs.append([pub, user, date])
     return render_template('home.html', title='Home', theme=get_theme(), pubs=pubs)
 
 

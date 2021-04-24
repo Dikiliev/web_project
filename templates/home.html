@@ -1,7 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1 class="white">Главная страница</h1>
-
+<div class="album py-5">
+        <div class="container center">
+            <div class="" style="width: 1065px">
+                {% if pubs %}
+                    {% for pub, user, date in pubs %}
+                        <div class="col" style="margin-top: 20px">
+                            <a href="/profile/{{user.name}}" class="btn btn-{{theme.style_btn}}" style="width: 800px; height: 100px;">
+                                <img src="{{ url_for('static', filename=user.filename_photo) }}" width="60" height="60"
+                                     class="rounded-circle" style="margin-left: 20px; margin-bottom: 15px">
+                                <name-text style="margin-left: 20px;">{{ user.name}}</name-text>
+                            </a>
+                            <a href="/show_publication/{{pub.id}}"><img src="{{ url_for('static', filename=pub.filename_photo) }}" width="800" height="800"></a>
+                            <a href="/show_publication/{{pub.id}}">
+                                <div class="btn btn-{{theme.style_btn}}" style="width: 800px; height: 100px;">
+                                    <st style="margin-left: 10px">{{pub.about}}</st>
+                                </div>
+                            </a>
+                            <div align="left">
+                                <bl-300 style="margin-left: 10px;" tyle="font-size: 15px; font-weight: 200;"> {{date}}</bl-300>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+      </div>
 {% endblock %}

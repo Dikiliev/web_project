@@ -16,15 +16,9 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Флаги
-is_open_dropdown = False
 
-
-theme = themes[0]
-
-
-def get_theme():
-    return theme
+def get_theme():    # Возвращает текушую тему
+    return themes[int(request.cookies.get("theme_index", 0))]
 
 
 @login_manager.user_loader
@@ -35,39 +29,47 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title='Home', theme=get_theme())
+    return redirect('/home')
 
 
 @app.route('/profile/<name>', methods=['GET', 'POST'])
-def profile(name):
+def profile(name):    # Страница профиля
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.name == name).first()
 
-    if user is None:
+    if user is None:    # Если пользователя не существует
         return render_template('profile.html', title='profile', theme=get_theme(), user_data=False)
 
-    current_user.load_data()
+    current_user.load_data()    # Загрузка дополнительных данных пользователя
     curr_user_data = current_user.other_data
-    user.__init__()
+
+    user.__init__()    # Загрузка дополнительных данных данного пользователя
     user_data = user.other_data
 
+    # Берем публикации данного пользователся и сортируем их по дате загрузки
     publications = db_sess.query(Publication).filter(Publication.user_id == user.id).all()
     publications = sorted(publications, key=lambda p: p.created_date, reverse=True)
+    # Берем оттуда только id и путь к файлу
     publications = [[pub.id, pub.filename_photo] for pub in publications]
 
     form = ProfileForm()
     if form.validate_on_submit():
+        # Если нажата кнопка отписатся
         if user.id in current_user.other_data['subscriptions']:
+            # Удаление пользователя из подписок и удаление текущего пользовтеля из его подписчиков
             current_user.other_data['subscriptions'].remove(user.id)
             user.other_data['followers'].remove(current_user.id)
 
             # Удаление уведомления
             notification = db_sess.query(Notification).filter(Notification.publication_id == -1,
                                                               Notification.sender_id == current_user.id,
-                                                              Notification.recipient_id == user.id)
-            db_sess.delete(notification)
-            db_sess.commit()
+                                                              Notification.recipient_id == user.id).first()
+            if notification is not None:
+                db_sess.delete(notification)
+                db_sess.commit()
+        # Инача (нажата кнопка подписатся)
         else:
+            # Добавление пользователя в подписки и добавление текущего пользователся в его подписки
             current_user.other_data['subscriptions'].append(user.id)
             user.other_data['followers'].append(current_user.id)
 
@@ -79,6 +81,7 @@ def profile(name):
             db_sess.add(notification)
             db_sess.commit()
 
+        # Сохрание данных обэих пользователей
         user.save_data()
         current_user.save_data()
 
@@ -87,7 +90,7 @@ def profile(name):
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
-def edit_profile():
+def edit_profile():     # Редактирование дыннх пользоветеля
     form = EditProfileForm()
 
     if form.validate_on_submit():
@@ -115,10 +118,12 @@ def edit_profile():
                 photo_name[-6:-6 + length] = str(num)
                 photo_name = ''.join(photo_name)
 
+            # Сохрание фотографии
             image_size(request.files['file'], photo_name)
             user.filename_photo = photo_name
 
         db_sess.commit()
+        # Для обновления данных current_user
         load_user(user.id)
 
         return redirect(f'/profile/{user.name}')
@@ -136,7 +141,7 @@ def edit_profile():
 
 
 @app.route('/search', methods=['GET', 'POST'])
-def search_user():
+def search_user():      # Поиск других пользователй
     form = SearchForm()
     if form.validate_on_submit():
         name = form.name.data  # Введенная пользователем имя (часть имени)
@@ -148,34 +153,27 @@ def search_user():
         users += db_sess.query(User).filter(User.id.notin_([user.id for user in users]),
                                             (User.name.like(f'%{name}%')) | (User.full_name.like(f'%{name}%'))).all()
 
-        return render_template('search.html', title='search', theme=get_theme(), form=form, users=users)
+        return render_template('search.html', title='Поиск', theme=get_theme(), form=form, users=users)
 
     return render_template('search.html', title='Поиск', theme=get_theme(), form=form)
 
 
-is_view = False
-
-
 @app.route('/add_publication', methods=['GET', 'POST'])
-def add_publication():
-    global is_view
+def add_publication():  # Добавление публикации
     form = AddPublicationForm()
 
     if form.submit_view.data or form.submit.data:
         current_user.load_data()  # Загрузка дополнительных данных пользователя
-
         # Создание пути к файлу
         photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
+        cache.clear()
 
-        # Создать фотография если она не создана
-        if not is_view:
+        # Сохранение фотографии
+        if request.files['file']:
             image_size(request.files['file'], photo_name)
-            is_view = True
 
         # Если нажата кнопка "Опубликовать"
         if form.submit.data:
-            is_view = False
-
             # Создание публикации...
             db_sess = db_session.create_session()
             publication = Publication()
@@ -202,7 +200,7 @@ def add_publication():
 
 
 @app.route('/edit_publication/<id_>', methods=['GET', 'POST'])
-def edit_publication(id_):
+def edit_publication(id_):  # Редактировине публикации
     form = EditPublicationForm()
 
     db_sess = db_session.create_session()
@@ -211,16 +209,14 @@ def edit_publication(id_):
     if form.submit.data:
 
         # Редактирование...
-        print(form.about.data)
         publication.about = form.about.data
-        print(publication.about)
         db_sess.commit()
 
         return redirect(f'/profile/{current_user.name}')
 
     if form.submit_delete.data:
-        # Удаление...
 
+        # Удаление...
         db_sess.delete(publication)
         db_sess.commit()
 
@@ -233,10 +229,11 @@ def edit_publication(id_):
 
 
 @app.route('/show_publication/<id_>', methods=['GET', 'POST'])
-def show_publication(id_):
+def show_publication(id_):  # Показ публикации
     form = ShowPublicationForm()
     db_sess = db_session.create_session()
 
+    # Берем публикацию и загружаем ее дополнительные данные
     publication = db_sess.query(Publication).filter(Publication.id == int(id_)).first()
     publication.__init__()
     current_user.load_data()
@@ -247,14 +244,18 @@ def show_publication(id_):
     if form.validate_on_submit():
         if form.like_submit.data:
             if publication.id in current_user.other_data['likes']:
+                # Удаление лайка файлах пользователя и публикации
                 publication.other_data['likes'].remove(current_user.id)
                 current_user.other_data['likes'].remove(publication.id)
 
                 # Удаление уведомления
                 notification = db_sess.query(Notification).filter(Notification.publication_id == publication.id,
                                                                   Notification.sender_id == current_user.id,
-                                                                  Notification.recipient_id == user.id)
+                                                                  Notification.recipient_id == user.id).first()
+                if notification is not None:
+                    db_sess.delete(notification)
             else:
+                # Добавление лайка файлах пользователя и публикации
                 publication.other_data['likes'].append(current_user.id)
                 current_user.other_data['likes'].append(publication.id)
 
@@ -274,13 +275,15 @@ def show_publication(id_):
 
 
 @app.route('/view_users/<type_>/<id_>', methods=['GET', 'POST'])
-def view_users(type_, id_):
+def view_users(type_, id_):     # Простомт подписчиков/подписок/лайкнувших
     db_sess = db_session.create_session()
     current_user.load_data()
 
     users = []
     title_ = ''
+    # Думаю тут понятно...
     if type_ == 'likes':
+        # Публикация чьи лайкнувших мы берем
         publication = db_sess.query(Publication).filter(Publication.id == id_).first()
         publication.load_data()
         users = db_sess.query(User).filter(User.id.in_(publication.other_data['likes'])).all()
@@ -303,18 +306,24 @@ def view_users(type_, id_):
 
 
 @app.route('/notification')
-def show_notification():
+def show_notification():    # Страница уведомлении
     db_sess = db_session.create_session()
+
     notifications_ = db_sess.query(Notification).filter(Notification.recipient_id == current_user.id).all()
-    notifications_ = sorted(notifications_, key=lambda n: n.created_date, reverse=True)
+    notifications_ = sorted(notifications_, key=lambda n: n.created_date, reverse=True)     # Сортировка по дате
+
     notifications = []
+
     for notification in notifications_:
+        # Отправитель
         user = db_sess.query(User).filter(User.id == notification.sender_id).first()
         if notification.publication_id == -1:
             publication = False
         else:
             publication = db_sess.query(Publication).filter(Publication.id == notification.publication_id).first()
-        date = get_date(notification.created_date)
+
+        date = get_date(notification.created_date)      # Возвращает дату/период
+
         notifications.append([user, notification, publication, date])
 
     return render_template('notification.html', title='Уведомления', theme=get_theme(), notifications=notifications)
@@ -333,26 +342,25 @@ def explore():
     return render_template('explore.html', title='Публикации', theme=get_theme(), publications=publications)
 
 
-@app.route('/direct')
-def direct():
-    return render_template('direct.html', title='Cообщения', theme=get_theme())
-
-
 @app.route('/home')
-def home():
+def home():     # Домашняя страница, тут показываются публикации только тех людей, на которых подписан пользователь
     db_sess = db_session.create_session()
     current_user.load_data()
-    publications = db_sess.query(Publication).filter(Publication.user_id.in_((current_user.other_data['subscriptions']))).all()
+    # Публикации опубликованные пользователями на которых подписан пользователь
+    publications = db_sess.query(Publication).filter(
+        Publication.user_id.in_((current_user.other_data['subscriptions']))).all()
+
     pubs = []
     for pub in publications:
-        user = db_sess.query(User).filter(User.id == pub.user_id).first()
-        date = get_date(pub.created_date)
-        pubs.append([pub, user, date])
+        user = db_sess.query(User).filter(User.id == pub.user_id).first()   # Пользователь который опуликовал...
+        date = get_date(pub.created_date)   # Дата...
+        pubs.append([pub, user, date])   # ...
+
     return render_template('home.html', title='Home', theme=get_theme(), pubs=pubs)
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
+def register():   # С урока...
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -388,7 +396,7 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login():    # Тоже с урока...
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -410,17 +418,18 @@ def logout():
 
 
 @app.route('/change_theme')
-def change_theme():
-    global theme
-    theme = next_theme(theme)
+def change_theme():   # Меняет тему и помещает ее индекс в куки
+    theme_index = int(request.cookies.get("theme_index", 0))
+    theme_index = (theme_index + 1) % len(themes)
 
-    return redirect('/home')
-
+    res = make_response(redirect('/home'))
+    res.set_cookie("theme_index", str(theme_index),
+                   max_age=60 * 60 * 24 * 365 * 2)
+    return res
 
 
 def main():
     db_session.global_init('db/blogs.sqlite')
-    db_sess = db_session.create_session()
     app.run(port=8080, host='127.0.0.1')
 
 

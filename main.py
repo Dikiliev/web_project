@@ -31,7 +31,9 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect('/home')
+    if current_user.is_authenticated:
+        return redirect('/home')
+    return redirect('/login')
 
 
 @app.route('/profile/<name>', methods=['GET', 'POST'])
@@ -171,7 +173,7 @@ def add_publication():  # Добавление публикации
 
         # Сохранение фотографии
         if request.files['file']:
-            
+
             # Если загружены неправильные данные
             if form.file.data.filename.split('.')[-1] not in ('png', 'jpg'):
                 print('error')
@@ -423,7 +425,7 @@ def login():    # Тоже с урока...
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect('/login')
 
 
 @app.route('/change_theme')

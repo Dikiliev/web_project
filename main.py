@@ -9,6 +9,8 @@ from forms.publications import AddPublicationForm, ShowPublicationForm, EditPubl
 from forms.search import SearchForm
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+
+# Описано additional_methods.py
 from data.additional_methods import is_latin, image_size, random_list, next_theme, themes, get_date
 
 app = Flask(__name__)
@@ -166,10 +168,17 @@ def add_publication():  # Добавление публикации
         current_user.load_data()  # Загрузка дополнительных данных пользователя
         # Создание пути к файлу
         photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
-        cache.clear()
 
         # Сохранение фотографии
         if request.files['file']:
+            
+            # Если загружены неправильные данные
+            if form.file.data.filename.split('.')[-1] not in ('png', 'jpg'):
+                print('error')
+                return render_template('add_publication.html', title='Добавить новость', theme=get_theme(),
+                                       form=form, message='Загрузите фотографию формата .png или .jpg')
+
+            # Сохранение фотографии
             image_size(request.files['file'], photo_name)
 
         # Если нажата кнопка "Опубликовать"

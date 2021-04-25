@@ -8,7 +8,7 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
-                {% if not form.submit_view.data %}
+                {% if not photo_name %}
                     <p>
                         {{ form.file.label(class="white") }}<br>
                         {{ form.file(class="white") }}<br>
@@ -20,11 +20,12 @@
                         {% endfor %}
                     </p>
                 {% endif %}
+                <bl-300 style="color: #ff1040">{{message}}</bl-300>
 
                 <p>
                     <div class="col">
                   <div>
-                      {% if form.submit_view.data %}
+                      {% if photo_name %}
                         <img src="{{ url_for('static', filename=photo_name) }}" width="1000" height="1000" vspace="5">
                       {% endif %}
                   </div>
@@ -49,7 +50,6 @@
                     {{ form.submit(type="submit", class="btn btn-" + theme.style) }}
                     <a href="/profile/{{current_user.name}}"> <button type="button" class="btn btn-{{theme.style}}">Отмена</button></a>
                 </p>
-                {{message}}
 
             </form>
         </div>

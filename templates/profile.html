@@ -31,7 +31,7 @@
                 <li class="nav-item"> <a href="/logout" style="margin-top: 17.5px; margin-left: 10px; width: 100px; height: 45px;" class="btn btn-outline-{{theme.style}} nav-link px-3">Выйти</a></li>
             </ol>
             <ol class="nav justify-content-center">
-                <st>{{ user_data.publications|length }} публикации</st>
+                <st>{{ len_pubs }} публикации</st>
 
                 <a href="/view_users/followers/{{user.id}}" style="margin-top: 10px"> <st>{{ user_data.followers|length }} подписчиков</st> </a>
                 <a href="/view_users/subscribers/{{user.id}}" style="margin-top: 10px"> <st>{{ user_data.subscriptions|length }} подписок</st> </a>

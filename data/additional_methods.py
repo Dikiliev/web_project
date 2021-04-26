@@ -1,6 +1,7 @@
-from random import shuffle
+from random import shuffle, randrange
 from PIL import Image
 import datetime
+import os
 
 
 def is_latin(text):
@@ -41,6 +42,16 @@ def random_list(list_, len_=99):
     list_ = list_[:len_]
     shuffle(list_)
     return list_
+
+
+def random_name(len_=10):
+    simvols = list('abcdefghijklmnopqrstuvwxyz_0123456789')
+    name = ''
+    while name == '' or os.path.isfile(f'/static/user_data/publication/{name}.png'):
+        name = ''
+        for _ in range(len_):
+            name += simvols[randrange(0, len(simvols))]
+    return name
 
 
 def get_date(date):

@@ -7,11 +7,12 @@ from data.notifications import Notification
 from forms.users import RegisterForm, LoginForm, EditProfileForm, ProfileForm
 from forms.publications import AddPublicationForm, ShowPublicationForm, EditPublicationForm
 from forms.search import SearchForm
+import os
 
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 # Описано additional_methods.py
-from data.additional_methods import is_latin, image_size, random_list, next_theme, themes, get_date
+from data.additional_methods import is_latin, image_size, random_list, next_theme, themes, get_date, random_name
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -55,6 +56,7 @@ def profile(name):    # Страница профиля
     publications = sorted(publications, key=lambda p: p.created_date, reverse=True)
     # Берем оттуда только id и путь к файлу
     publications = [[pub.id, pub.filename_photo] for pub in publications]
+    len_pubs = len(publications)
 
     form = ProfileForm()
     if form.validate_on_submit():
@@ -62,7 +64,8 @@ def profile(name):    # Страница профиля
         if user.id in current_user.other_data['subscriptions']:
             # Удаление пользователя из подписок и удаление текущего пользовтеля из его подписчиков
             current_user.other_data['subscriptions'].remove(user.id)
-            user.other_data['followers'].remove(current_user.id)
+            if current_user.id in user.other_data['followers']:
+                user.other_data['followers'].remove(current_user.id)
 
             # Удаление уведомления
             notification = db_sess.query(Notification).filter(Notification.publication_id == -1,
@@ -75,7 +78,8 @@ def profile(name):    # Страница профиля
         else:
             # Добавление пользователя в подписки и добавление текущего пользователся в его подписки
             current_user.other_data['subscriptions'].append(user.id)
-            user.other_data['followers'].append(current_user.id)
+            if current_user.id not in user.other_data['followers']:
+                user.other_data['followers'].append(current_user.id)
 
             # Добавление уведомления
             notification = Notification()
@@ -90,7 +94,7 @@ def profile(name):    # Страница профиля
         current_user.save_data()
 
     return render_template('profile.html', title='profile', theme=get_theme(), form=form, user=user,
-                           user_data=user_data, curr_user_data=curr_user_data, pubs=publications)
+                           user_data=user_data, curr_user_data=curr_user_data, pubs=publications, len_pubs=len_pubs)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -168,21 +172,20 @@ def add_publication():  # Добавление публикации
 
     if form.submit_view.data or form.submit.data:
         current_user.load_data()  # Загрузка дополнительных данных пользователя
-        # Создание пути к файлу
-        photo_name = f'user_data/publications/id_{current_user.id}_pub_{len(current_user.other_data["publications"]) + 1}.png'
-
+        photo_name = current_user.other_data.get('pub_filename', '')
         # Сохранение фотографии
-        if request.files['file']:
-
+        if request.files and request.files['file']:
             # Если загружены неправильные данные
             if form.file.data.filename.split('.')[-1] not in ('png', 'jpg'):
-                print('error')
                 return render_template('add_publication.html', title='Добавить новость', theme=get_theme(),
                                        form=form, message='Загрузите фотографию формата .png или .jpg')
 
+            # Создание пути к файлу
+            photo_name = f'user_data/publications/{random_name()}.png'
+            current_user.other_data['pub_filename'] = photo_name
+            current_user.save_data()
             # Сохранение фотографии
             image_size(request.files['file'], photo_name)
-
         # Если нажата кнопка "Опубликовать"
         if form.submit.data:
             # Создание публикации...
@@ -194,13 +197,6 @@ def add_publication():  # Добавление публикации
 
             db_sess.add(publication)
             db_sess.commit()
-
-            # Загрузка публикации в дополнительные файлы пользователя (Сделано для удобства,
-            # что бы при посещении профиля не искали его публикации среди всех других сещуствующих)
-            user = db_sess.query(User).filter(User.id == current_user.id).first()
-            user.load_data()
-            user.other_data['publications'].insert(0, photo_name)
-            user.save_data()
 
             return redirect(f'/profile/{current_user.name}')
         # Иначе (Нажата кнопка "Просмореть")
@@ -256,7 +252,8 @@ def show_publication(id_):  # Показ публикации
         if form.like_submit.data:
             if publication.id in current_user.other_data['likes']:
                 # Удаление лайка файлах пользователя и публикации
-                publication.other_data['likes'].remove(current_user.id)
+                if current_user.id in publication.other_data['likes']:
+                    publication.other_data['likes'].remove(current_user.id)
                 current_user.other_data['likes'].remove(publication.id)
 
                 # Удаление уведомления
@@ -265,9 +262,11 @@ def show_publication(id_):  # Показ публикации
                                                                   Notification.recipient_id == user.id).first()
                 if notification is not None:
                     db_sess.delete(notification)
+                    db_sess.commit()
             else:
                 # Добавление лайка файлах пользователя и публикации
-                publication.other_data['likes'].append(current_user.id)
+                if current_user.id not in publication.other_data['likes']:
+                    publication.other_data['likes'].append(current_user.id)
                 current_user.other_data['likes'].append(publication.id)
 
                 # Добавление уведомления
@@ -441,7 +440,7 @@ def change_theme():   # Меняет тему и помещает ее инде�
 
 def main():
     db_session.global_init('db/blogs.sqlite')
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8080, host='127.0.0.1', debug=True)
 
 
 if __name__ == '__main__':

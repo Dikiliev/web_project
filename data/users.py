@@ -39,8 +39,8 @@ class User(SqlAlchemyBase, UserMixin):
                 self.other_data = {
                     'followers': [],
                     'subscriptions': [],
-                    'publications': [],
                     'likes': [],
+                    'pub_filename': ''
                 }
 
             json.dump(self.other_data, file)
